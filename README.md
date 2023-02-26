@@ -1,5 +1,25 @@
 # CoolCookApp
-CoolCookApp
+
+
+#Koncept Aplikacji:
+
+
+###Aplikacja ma zadanie przedstawic użytkownikowi zbiór przepisów jedzenia znajdujących się w bazie danych,a także umożliwiać dodanie własnych przepisów
+
+#Wymagania Aplikacji:
+* Wyświetlanie przepisów
+  * licznik kalori
+  * składniki
+  * opis przygotowania
+  * czas
+* Dodawanie przepisów
+* Wyszukiwanie przepisów
+* Strona główna przedstawiająca aplikacje
+* 3 podstrony przedstawiające opis 3 różnych kuchni świata
+  * kuchnia polska
+  * kuchnia azjatycka
+  * kuchnia włoska
+
 
 # base
 
