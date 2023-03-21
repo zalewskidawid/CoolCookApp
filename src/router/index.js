@@ -1,20 +1,31 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
+import Home from '@/components/Home';
+import Contact from '@/components/Contact';
+import LoginForm from '@/components/LoginForm';
+import RegisterForm from '@/components/RegisterForm';
+import Recipes from '@/components/Recipes';
 
 const routes = [
   {
     path: '/',
-    component: () => import('@/layouts/default/Default.vue'),
-    children: [
-      {
-        path: '',
-        name: 'Home',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
-      },
-    ],
+    component: Home,
+  },
+  {
+    path: '/Recipes',
+    component: Recipes,
+  },
+  {
+    path: '/Login',
+    component: LoginForm,
+  },
+  {
+    path: '/Contact',
+    component: Contact,
+  },
+  {
+    path: '/Register',
+    component: RegisterForm,
   },
 ]
 
