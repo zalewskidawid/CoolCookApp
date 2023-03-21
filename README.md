@@ -1,4 +1,4 @@
-# CoolCookApp
+yarn# CoolCookApp
 
 
 #Koncept Aplikacji:
