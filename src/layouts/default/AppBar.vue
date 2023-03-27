@@ -60,11 +60,7 @@
 
       updateScroll() {
         const scrollPosition = window.scrollY;
-        if(scrollPosition > 30) {
-          this.scrolledNavigation = true;
-        } else {
-          this.scrolledNavigation = false;
-        }
+        scrollPosition > 0 ? this.scrolledNavigation = true : this.scrolledNavigation = false;
       }
     },
   }
@@ -83,6 +79,7 @@ header {
   position: fixed;
   transition: .5s ease all;
   color: white;
+  height: 80px;
 
   nav{
     position: relative;
@@ -203,6 +200,7 @@ header {
 .scrolled-nav {
   background-color: darkgray;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  position: fixed;
 
   nav {
     padding: 8px 0;
