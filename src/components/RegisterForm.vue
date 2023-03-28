@@ -19,6 +19,7 @@
           color="primary"
           label="Last name"
           variant="underlined"
+          :rules="lastNameRules"
         ></v-text-field>
 
         <v-text-field
@@ -26,15 +27,21 @@
           color="primary"
           label="Email"
           variant="underlined"
+          :rules="emailRules"
         ></v-text-field>
 
-        <v-text-field
-          v-model="password"
-          color="primary"
-          label="Password"
-          placeholder="Enter your password"
-          variant="underlined"
-        ></v-text-field>
+
+            <v-text-field
+              v-model="password"
+              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules='passwordRules'
+              :type="show1 ? 'text' : 'password'"
+              label="Password"
+              placeholder="Enter your password."
+              variant="underlined"
+              @click:append="show1 = !show1"
+            ></v-text-field>
+
 
         <v-checkbox
           v-model="boolValue"
@@ -59,13 +66,37 @@ export default {
     email: '',
     password: '',
     boolValue: false,
+    show1: false,
     firstNameRules: [
       value => {
-        console.log(value);
         if (value) return true
         return 'You must enter a first name.'
       },
     ],
+    lastNameRules: [
+      value => {
+        if (value) return true
+        return 'You must enter a last name.'
+      },
+    ],
+    emailRules: [
+      value => {
+        if (value==='')
+        {
+          return 'You must enter email'}
+        if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value))
+        { return true}
+        else {return 'E-mail must contain @'}
+
+      },
+    ],
+    passwordRules: [
+      value => {
+        if (value==='') {return 'You must enter a password.' }
+       if(value.length<8) {return 'Password length must be greater than 7.' }
+      },
+    ],
+
   }),
   methods: {
     getUserData() {

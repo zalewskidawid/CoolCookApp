@@ -21,7 +21,7 @@
 
 div {
   display: grid;
-  margin: 8%;
+  margin-top: 80px;
   justify-content: center;
   align-items: center;
 

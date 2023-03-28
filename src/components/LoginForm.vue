@@ -12,15 +12,20 @@
           color="primary"
           label="Email"
           variant="underlined"
+          :rules="emailRules"
         ></v-text-field>
 
-        <v-text-field
-          v-model="password"
-          color="primary"
-          label="Password"
-          placeholder="Enter your password"
-          variant="underlined"
-        ></v-text-field>
+      <v-text-field
+        v-model="password"
+        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+        :rules='passwordRules'
+        :type="show1 ? 'text' : 'password'"
+        label="Password"
+        placeholder="Enter your password."
+        variant="underlined"
+        @click:append="show1 = !show1"
+
+      ></v-text-field>
 
 
       <v-card-actions>
@@ -40,8 +45,41 @@
 
 <script>
   export default{
+    data: () => ({
+      email: '',
+      password: '',
+      show1: false,
+      emailRules: [
+        value => {
+          if (value === '') {
+            return 'You must enter email'
+          }
+          if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
+            return true
+          } else {
+            return 'E-mail must contain @'
+          }
 
+        },
+      ],
+      passwordRules: [
+        value => {
+          if (value === '') {
+            return 'You must enter a password.'
+          }
+          if (value.length < 8) {
+            return 'Password length must be greater than 7.'
+          }
+        },
+      ],
+
+    })
   }
+
 
 </script>
 
+<style lang="scss" scoped >
+
+
+</style>
