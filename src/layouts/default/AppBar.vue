@@ -7,7 +7,8 @@
       <ul v-show="!mobile" class="navigation">
         <li><router-link active-class="active-link" class="link"  to="/">HomePage</router-link></li>
         <li><router-link active-class="active-link"  class="link"  to="/Recipes">Recipes</router-link></li>
-        <li><router-link active-class="active-link" class="link"  to="/Login">Login</router-link></li>
+        <li v-if="checkUserLoginStatus === false"><router-link active-class="active-link" class="link"  to="/Login">Login</router-link></li>
+        <li v-else><div class="logout-btn" @click="userLogout">Logout</div></li>
         <li><router-link active-class="active-link" class="link"  to="/Contact">Contact</router-link></li>
       </ul>
       <div class="icon">
@@ -33,7 +34,8 @@
         scrolledNavigation: null,
         mobile: null,
         mobileNav: null,
-        windowWidth: null
+        windowWidth: null,
+        userLoginStatus: false,
       };
     },
     created(){
@@ -47,7 +49,9 @@
       toggleMobileNav() {
         this.mobileNav = !this.mobileNav;
       },
-
+      userLogout() {
+        this.$store.dispatch('logout');
+      },
       checkScreen() {
       this.windowWidth = window.innerWidth;
       if(this.windowWidth <= 750){
@@ -63,6 +67,11 @@
         scrollPosition > 0 ? this.scrolledNavigation = true : this.scrolledNavigation = false;
       }
     },
+    computed: {
+      checkUserLoginStatus() {
+        return this.$store.getters.getUserLoginStatus;
+      }
+    }
   }
 </script>
 
@@ -105,6 +114,17 @@ header {
       text-transform: uppercase;
       padding: 16px;
       margin-left: 16px;
+    }
+    div {
+      padding-bottom: 8px;
+      font-size: 14px;
+      border-bottom: 1px solid transparent;
+      display: unset;
+      cursor: pointer;
+      &:hover {
+        color: pink;
+        border-color: rgb(255, 0, 106);
+      }
     }
     .link {
       font-size: 14px;
