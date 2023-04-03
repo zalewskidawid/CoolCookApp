@@ -16,3 +16,16 @@
     }
   }
 </script>
+
+
+
+<style lang="scss" scoped >
+
+*{
+  background-image: url("https://gico.io/spcica/images/main-slider/1.jpg");
+
+}
+
+
+
+</style>

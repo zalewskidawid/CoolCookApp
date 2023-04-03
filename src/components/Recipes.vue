@@ -15,15 +15,13 @@
 
 <style lang="scss" scoped >
 
-// a.active-link{
-//   color: black  !important;
-// }
 
 div {
   display: grid;
   margin-top: 80px;
   justify-content: center;
   align-items: center;
+  background: no-repeat;
 
 }
 

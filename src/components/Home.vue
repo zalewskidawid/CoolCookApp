@@ -73,11 +73,13 @@
 
 <style lang="scss" scoped >
 
+
 div {
   display: grid;
   margin-top: 80px;
   justify-content: center;
   align-items: center;
+  background: no-repeat;
 
 }
 

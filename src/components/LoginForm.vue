@@ -91,8 +91,16 @@ export default {
 
 
 </script>
+<style lang="scss" scoped >
 
-<style lang="scss" scoped>
 
+div {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  background: no-repeat;
+  
+
+}
 
 </style>
