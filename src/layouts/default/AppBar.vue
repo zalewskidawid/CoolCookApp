@@ -82,7 +82,7 @@
 // }
 
 header {
-  background-color: rgba(0,0,0,0.8);
+  background-color: transparent;
   z-index: 99;
   width: 100%;
   position: fixed;
@@ -218,10 +218,23 @@ header {
 }
 
 .scrolled-nav {
-  background-color: darkgray;
   height: 70px;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
   position: fixed;
+  z-index: 3;
+  transition: .5s ease all;
+  &:after {
+    content: '';
+    position: absolute;
+    background-color: darkgray;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    opacity: 0.6;
+    display: block;
+    z-index: -3;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
 
   nav {
     padding: 8px 0;

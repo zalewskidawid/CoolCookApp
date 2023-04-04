@@ -1,6 +1,5 @@
 <template>
   <v-container fluid class="">
-  <h1>{{ this.tittle }}</h1>
   <Slider></Slider>
   </v-container>
 </template>

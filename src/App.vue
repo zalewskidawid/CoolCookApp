@@ -31,8 +31,8 @@
   background-blend-mode: darken;
   // background-size:contain;
   background-size:cover;
-  margin-top: 80px;
-  min-height: calc( 100vh - 80px);
+  padding-top: 80px;
+  min-height: 100vh;
 
 }
 
