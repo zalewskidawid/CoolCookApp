@@ -1,7 +1,7 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/components/Home';
-import Contact from '@/components/Contact';
+import Contact from '@/components/TheContact';
 import LoginForm from '@/components/LoginForm';
 import RegisterForm from '@/components/RegisterForm';
 import Recipes from '@/components/Recipes';
