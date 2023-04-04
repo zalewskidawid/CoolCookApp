@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Swiper :modules="[EffectCards, EffectCube, Pagination, Autoplay]" 
+        <Swiper :modules="[EffectCards, EffectCube, Pagination, Autoplay]"
         effect="cards"
         :grab-cursor="true"
         :loop="true"
@@ -23,7 +23,7 @@
 
     </div>
   </template>
-  
+
   <script>
   import {Swiper, SwiperSlide} from "swiper/vue";
   import {EffectCube} from "swiper"
@@ -54,14 +54,13 @@
       modules: {EffectCards, EffectCube, Pagination, Autoplay}
 }
   </script>
-  
+
   <style lang="scss" scoped >
 
   .swiper{
     width: 550px;
     height: 600px;
     overflow: visible;
-    margin-bottom: 1000px;
   }
 
   .swiper-slide img{
@@ -77,8 +76,7 @@
     color: pink;
     width: 100%;
   }
-  
-  
+
+
 
   </style>
-  

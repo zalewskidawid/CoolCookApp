@@ -7,5 +7,6 @@ export default {
   },
   userLogout(state, payload) {
     state.userAuth = payload;
+    state.userAuth = [];
   }
 }
