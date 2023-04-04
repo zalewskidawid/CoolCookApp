@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <v-container fluid >
     <h1>{{ this.tittle }}</h1>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -14,15 +14,5 @@
 </script>
 
 <style lang="scss" scoped >
-
-
-div {
-  display: grid;
-  margin-top: 80px;
-  justify-content: center;
-  align-items: center;
-  background: no-repeat;
-
-}
 
 </style>

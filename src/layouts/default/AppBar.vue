@@ -121,10 +121,10 @@ header {
       border-bottom: 1px solid transparent;
       display: unset;
       cursor: pointer;
-      &:hover {
-        color: pink;
-        border-color: rgb(255, 0, 106);
-      }
+      // &:hover {
+      //   color: pink;
+      //   border-color: rgb(255, 0, 106);
+      // }
     }
     .link {
       font-size: 14px;
@@ -132,10 +132,10 @@ header {
       padding-bottom: 6px;
       border-bottom: 1px solid transparent;
 
-      &:hover{
-        color: pink;
-        border-color: rgb(255, 0, 106);
-      }
+      // &:hover{
+      //   color: pink;
+      //   border-color: rgb(255, 0, 106);
+      // }
     }
 
     a.active-link{
@@ -219,6 +219,7 @@ header {
 
 .scrolled-nav {
   background-color: darkgray;
+  height: 70px;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
   position: fixed;
 
