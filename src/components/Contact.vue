@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <h1>{{ this.tittle }}</h1>
 
 
@@ -10,21 +11,12 @@
   export default{
     data() {
         return {
-            tittle: ''
+            tittle: 'Here goes contact form'
         }
     }}
 </script>
 
 <style lang="scss" scoped >
 
-
-div {
-  display: grid;
-  margin-top: 80px;
-  justify-content: center;
-  align-items: center;
-  background: no-repeat;
-
-}
 
 </style>
