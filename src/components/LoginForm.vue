@@ -1,5 +1,7 @@
+
+
 <template>
-  <v-container class="fill-height">
+  <v-container fluid class="fill-height">
     <v-card
       class="mx-auto pa-8"
       max-width="344"
