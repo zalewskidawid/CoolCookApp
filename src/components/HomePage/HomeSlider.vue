@@ -14,7 +14,7 @@
         }"
         :pagination="true"
         >
-            <SwiperSlide v-for="photo in photos">
+            <SwiperSlide v-for="photo in photos" v-bind:key="photo.id">
                 <h2 class="cousin-name">{{ photo.name}}</h2>
                 <img :src="`src/assets/cuisines/${photo.src}`" alt="" />
             </SwiperSlide>
@@ -39,9 +39,9 @@
       data() {
         return {
           photos: [
-          {src:"asian-cuisine.jpg", name:"Asian cousin"},
-          {src:"polish-cuisine.jpg", name:"Polish cousin"},
-          {src:"italian-cuisine.jpg", name:"Italian cousin"}
+          {src:"asian-cuisine.jpg", name:"Asian cousin", id: 1},
+          {src:"polish-cuisine.jpg", name:"Polish cousin", id: 2},
+          {src:"italian-cuisine.jpg", name:"Italian cousin", id: 3}
           ],
           EffectCube: EffectCube,
           EffectCards: EffectCards,
