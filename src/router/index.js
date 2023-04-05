@@ -1,10 +1,10 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/components/Home';
-import Contact from '@/components/TheContact';
-import LoginForm from '@/components/LoginForm';
-import RegisterForm from '@/components/RegisterForm';
-import Recipes from '@/components/Recipes';
+import Home from '@/pages/HomePage';
+import Contact from '@/pages/ContactPage';
+import LoginForm from '@/pages/LoginPage';
+import RegisterForm from '@/pages/RegisterPage';
+import Recipes from '@/pages/RecipesPage';
 
 const routes = [
   {
