@@ -1,5 +1,10 @@
 h1{
-    color: red;
+    color: pink;
+}
+
+span{
+    color: salmon;
+    font-weight: 500;
 }
 
 .swiper-pagination-bullet {
@@ -11,3 +16,11 @@ h1{
 .swiper-pagination-bullet-active {
     background-color: pink ;
 }
+
+.swiper-cube .swiper-cube-shadow:before {
+    background: pink;
+}
+
+::-webkit-scrollbar {
+    display: none;
+  }
