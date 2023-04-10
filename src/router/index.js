@@ -5,6 +5,7 @@ import Contact from '@/pages/ContactPage';
 import LoginForm from '@/pages/LoginPage';
 import RegisterForm from '@/pages/RegisterPage';
 import Recipes from '@/pages/RecipesPage';
+import AboutMe from '@/pages/AboutMe';
 
 const routes = [
   {
@@ -23,6 +24,30 @@ const routes = [
     path: '/Contact',
     component: Contact,
   },
+  {
+    path: '/Contact/DawidWymoczylo',
+    component: AboutMe,
+    props: {
+      name: 'Dawid Wymoczyło',
+      photoUrl: '../src/assets/about_me-avatars/aboutme_placeholder.png'
+    }
+  },
+  {
+    path: '/Contact/DawidZalewski',
+    component: AboutMe,
+    props: {
+      name: 'Dawid Zalewski',
+      photoUrl: '../src/assets/about_me-avatars/aboutme_placeholder.png'
+  }
+},
+{
+    path: '/Contact/MichalWnorowski',
+    component: AboutMe,     
+    props: {
+      name: 'Michał Wnorowski',
+      photoUrl: '../src/assets/about_me-avatars/aboutme_placeholder.png'
+  }
+},
   {
     path: '/Register',
     component: RegisterForm,
