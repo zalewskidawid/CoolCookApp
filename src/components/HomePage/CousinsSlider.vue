@@ -58,9 +58,20 @@
   <style lang="scss" scoped >
 
   .swiper{
-    width: 550px;
-    height: 600px;
+    width: 400px;
+    height: 450px;
     overflow: visible;
+  }
+
+  @media (max-width: 1140px) {
+    .swiper{
+      width: 200px;
+      height: 250px;
+    }
+    
+  .cousin-name{
+    font-size: 15px;
+  }
   }
 
   .swiper-slide img{
@@ -68,6 +79,7 @@
     height: 100%;
     border-radius: 20px;
   }
+  
 
   .cousin-name{
     position: absolute;
