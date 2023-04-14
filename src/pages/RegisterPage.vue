@@ -67,10 +67,12 @@ export default {
       value => {
         if (!value) {
           return 'You must enter a firstname.';
-        } else if (/\d/.test(value)) {
-          return 'Firstname cannot contain any numbers.'
+        } else if (!(/^[a-zA-Z]'?([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]|\.| |-)+$/.test(value))) {
+          return 'First name cannot contain any number and special chars.'
         } else if (value.length < 2) {
-          return 'Firstname length must be greather than one.'
+          return 'First name length must be greater than one.'
+        } else if (value.length > 40) {
+          return 'First name length must be lower than forty.'
         }
       },
     ],
@@ -78,10 +80,13 @@ export default {
       value => {
         if (!value) {
           return 'You must enter a lastname.'
-        } else if (/\d/.test(value)) {
-          return 'Lastname cannot contain any numbers.'
+        } else if  (!(/^[a-zA-Z]'?([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]|\.| |-)+$/.test(value))) {
+          return 'Last name cannot contain any numbers and special chars.'
         } else if (value.length < 2) {
-          return 'Lastname length must be greather than one.'
+          return 'Last name length must be greater than one.'
+        }
+        else if (value.length > 40) {
+          return 'Last name length must be lower than forty.'
         }
       },
     ],
@@ -90,7 +95,7 @@ export default {
         if (!value) {
           return 'You must enter email'
         } else if (!(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value))) {
-          return 'Email must contain @'
+          return 'Please enter a valid email address.'
         }
       },
     ],
@@ -98,9 +103,11 @@ export default {
       value => {
         if (!value) {
           return 'You must enter a password.'
-        } else if (value.length < 8) {
-          return 'Password length must be greater than 7.'
         }
+        else if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&^()_-])[A-Za-z\d@$!#%*?&^()_-]{8,}$/.test(value))) {
+          return 'Password require minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:.'
+        }
+
       },
     ],
 

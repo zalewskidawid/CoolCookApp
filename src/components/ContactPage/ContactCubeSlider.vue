@@ -77,7 +77,7 @@ export default {
           src: AvatarsSrc.MW_AVATAR_URL,
           name: "Michał Wnorowski",
           pathName: "MichalWnorowski",
-          shortInfo: "Pokerek goes brrrrr",
+          shortInfo: "A young programmer who wants to develop his skills towards front-end.",
           role: "Front-end developer",
           id: 3,
         },
