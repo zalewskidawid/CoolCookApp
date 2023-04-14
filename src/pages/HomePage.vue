@@ -1,18 +1,19 @@
 <template>
   <v-container fluid>
-  <Slider></Slider>
+  <HomePageSlider></HomePageSlider>
   </v-container>
 </template>
 
 <script>
-import Slider from '@/components/HomePage/HomeSlider.vue'
+import Slider from '@/components/HomePage/CousinsSlider.vue'
+import HomePageSlider from '@/components/HomePage/HomePageSlider.vue'
   export default{
     data() {
         return {
             tittle: "Home Page content"
         };
     },
-    components: { Slider }
+    components: { Slider, HomePageSlider }
 }
 </script>
 
