@@ -72,7 +72,7 @@ export default {
         } else if (value.length < 2) {
           return 'First name length must be greater than one.'
         } else if (value.length > 40) {
-          return 'First name length must be lower than forty.'
+          return 'First name length must be lower than fourty.'
         }
       },
     ],
@@ -86,7 +86,7 @@ export default {
           return 'Last name length must be greater than one.'
         }
         else if (value.length > 40) {
-          return 'Last name length must be lower than forty.'
+          return 'Last name length must be lower than fourty.'
         }
       },
     ],

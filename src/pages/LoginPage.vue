@@ -54,7 +54,7 @@ export default {
         if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
           return true
         } else {
-          return 'E-mail must contain @'
+          return 'Please enter a valid email address.'
         }
 
       },
@@ -82,7 +82,9 @@ export default {
           await this.$store.dispatch('userLogin', data);
           this.$router.replace('/');
         } catch (err) {
+          //FIXME:: err.message is: Failed to register.
           alert(err.message || 'Failed to login. Check your data.');
+          // alert(err.message || 'Failed to login. Check your data.');
         }
       } else {
         return true;
