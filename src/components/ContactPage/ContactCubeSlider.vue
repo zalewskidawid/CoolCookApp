@@ -6,7 +6,7 @@
       :grab-cursor="true"
       :loop="true"
       :autoplay="{
-        delay: 1500,
+        delay: 3000,
         disableOnInteraction: false,
       }"
       :cards-effect="{
@@ -60,7 +60,7 @@ export default {
           name: "Dawid Wymoczyło",
           pathName: "DawidWymoczylo",
           shortInfo:
-            "Awesome boy from Świdnik, 23 years on kark",
+            "Hello there",
           role: "Front-end developer",
           id: 1,
         },
@@ -77,7 +77,7 @@ export default {
           src: AvatarsSrc.MW_AVATAR_URL,
           name: "Michał Wnorowski",
           pathName: "MichalWnorowski",
-          shortInfo: "Pokerek goes brrrrr",
+          shortInfo: "A young programmer who wants to develop his skills towards front-end.",
           role: "Front-end developer",
           id: 3,
         },
