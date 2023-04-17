@@ -5,7 +5,7 @@
       max-width="344"
       title="User Registration"
     >
-      <v-form ref="myForm" @submit.prevent="handleVerification" class="pb-4">
+      <v-form ref="myForm" @submit.prevent class="pb-4">
         <v-text-field
           v-model="first"
           color="primary"
@@ -43,6 +43,13 @@
           @click:append="show1 = !show1"
           class="pb-2"
         ></v-text-field>
+        <v-checkbox
+        id="robot"
+      v-model="checkbox"
+      @change="handleVerification($event)"
+      :checked="true"
+      :label=information
+      ></v-checkbox>
         <v-btn type="submit"
                block class="mt-2"
                color="success"
@@ -56,7 +63,6 @@
       </router-link>
     </v-card>
   </v-container>
-
 </template>
 
 
@@ -84,25 +90,39 @@ export default {
           })
           .onSuccess(function () {
             web.handleSubmit();
-            // your code, please reset the CAPTCHA based on you business
+            web.information = `I'm not a robot`
+            const robot = document.querySelector('#robot');
+            robot.ariaDisabled = true;
+            robot.disabled = true;
+          })
+
+          .onFail(function() {
+            web.information = 'You are a robot'
+            // robot.checked = false;
+            // robot.value = false;
+            // robot.ariaChecked = false;
+            robot.ariaDisabled = true;
+            robot.disabled = true;
           })
           .onError(function () {
+            console.error('error')
             //your code
+            
           });
-
-
 
       }
     );
   },
 
   data: () => ({
+    information: `I'm not a robot`,
     first: '',
     last: '',
     email: '',
     password: '',
     show1: false,
     geetest: '',
+    checkbox: false,
     firstNameRules: [
       value => {
         if (!value) {
@@ -155,7 +175,7 @@ export default {
 
   methods: {
 
-    handleVerification(){
+    handleVerification(e){
       this.geetest.showBox();
     },
 
@@ -167,15 +187,15 @@ export default {
 
       const {valid} = await this.$refs.myForm.validate()
 
-
-      if(this.submitted == true){
-      if (valid) {
+      // if(this.submitted){
+      if (valid && this.submitted) {
         const data = {
           firstName: this.first,
           lastName: this.last,
           email: this.email,
           password: this.password,
         }
+        
         try {
           await this.$store.dispatch('userRegistration', data);
           this.$router.replace('/');
@@ -187,7 +207,7 @@ export default {
       }
     }},
   }
-}
+// }
 
 </script>
 
