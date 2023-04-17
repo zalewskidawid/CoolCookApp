@@ -1,11 +1,11 @@
-<template>
-  <v-container fluid class="fill-height">
+ <template>
+  <v-container  fluid class="fill-height">
     <v-card
       class="mx-auto pa-8"
       max-width="344"
       title="User Registration"
     >
-      <v-form ref="myForm" @submit.prevent class="pb-4">
+      <v-form ref="myForm" @submit.prevent="handleVerification" class="pb-4">
         <v-text-field
           v-model="first"
           color="primary"
@@ -43,7 +43,10 @@
           @click:append="show1 = !show1"
           class="pb-2"
         ></v-text-field>
-        <v-btn type="submit" block class="mt-2" color="success" @click="validate">Register
+        <v-btn type="submit"
+               block class="mt-2"
+               color="success"
+               @click="validate">Register
           <v-icon icon="mdi-chevron-right" end></v-icon>
         </v-btn>
       </v-form>
@@ -53,16 +56,53 @@
       </router-link>
     </v-card>
   </v-container>
+
 </template>
 
+
+
+
+
 <script>
+
 export default {
+
+  mounted(){
+    let web = this;
+    initGeetest4(
+      {
+        // Omit required configuration parameters
+
+        product: "bind",
+        captchaId:'5b49a80c1d016178160d866e71d43fa3',
+      },
+      function (captchaObj) {
+        web.geetest = captchaObj;
+        captchaObj
+          .onReady(function () {
+            // please call the showCaptcha method to show the CAPTCHA when it is ready
+          })
+          .onSuccess(function () {
+            web.handleSubmit();
+            // your code, please reset the CAPTCHA based on you business
+          })
+          .onError(function () {
+            //your code
+          });
+
+
+
+      }
+    );
+  },
+
   data: () => ({
     first: '',
     last: '',
     email: '',
     password: '',
     show1: false,
+    geetest: '',
     firstNameRules: [
       value => {
         if (!value) {
@@ -112,9 +152,23 @@ export default {
     ],
 
   }),
+
   methods: {
+
+    handleVerification(){
+      this.geetest.showBox();
+    },
+
+    handleSubmit(){
+      this.submitted = true;
+    },
+
     async validate() {
+
       const {valid} = await this.$refs.myForm.validate()
+
+
+      if(this.submitted == true){
       if (valid) {
         const data = {
           firstName: this.first,
@@ -131,7 +185,7 @@ export default {
       } else {
         return true;
       }
-    },
+    }},
   }
 }
 
