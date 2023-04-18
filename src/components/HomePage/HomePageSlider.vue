@@ -4,7 +4,6 @@
         '--swiper-navigation-color': 'white',
       }"
       :speed="2000"
-      :parallax="true"
       :pagination="{
         clickable: true,
       }"
@@ -19,10 +18,6 @@
       <div
         slot="container-start"
         class="parallax-bg"
-        :style="{
-          'background-image':
-            'url(src/assets/slider-background.jpg)',
-        }"
         data-swiper-parallax="-23%"
       ></div>
       <swiper-slide class="container">
@@ -39,9 +34,9 @@
             velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut
             libero. Aenean feugiat non eros quis feugiat.
           </p>
-          
-          
-        </div> 
+
+
+        </div>
     </div>
         <Slider class="content"></Slider></swiper-slide
       ><swiper-slide>
@@ -78,20 +73,20 @@
   <script>
   // Import Swiper Vue.js components
   import { Swiper, SwiperSlide } from "swiper/vue";
-  
+
   // Import Swiper styles
   import "swiper/css";
-  
+
   import "swiper/css/pagination";
   import "swiper/css/navigation";
   import Slider from "@/components/HomePage/CousinsSlider.vue"
-  
 
-  
+
+
   // import required modules
   import { Parallax, Pagination, Navigation, Autoplay } from "swiper";
-  
-  
+
+
   export default {
     components: {
       Swiper,
@@ -147,4 +142,3 @@
 
 
 </style>
-  

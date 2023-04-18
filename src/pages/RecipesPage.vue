@@ -3,9 +3,8 @@
     <v-card
       class="mx-auto pa-8"
       max-width="600"
-      title="User Login"
     >
-    
+
       <v-form @submit.prevent="submitForm">
         <h2 class="pb-2">Add your recipe</h2>
         <v-text-field v-model="title" label="Recipe title"></v-text-field>
@@ -18,16 +17,16 @@
           chips
         ></v-select>
         <v-text-field v-model="newCategory" label="Add new category"></v-text-field>
-        <v-btn @click="addCategory" class="mb-6">Add category</v-btn>
+        <v-btn @click="addCategory" class="mb-6 me-2">Add category</v-btn>
         <div v-for="(step, index) in steps" :key="index">
           <v-text-field
             v-model="step.description"
             :label="'Step ' + (index + 1)"
             :placeholder="'Step ' + (index + 1)"
           ></v-text-field>
-          <v-btn @click="removeStep(index)">Remove step</v-btn>
+          <v-btn class="my-3 mb-6" @click="removeStep(index)">Remove step</v-btn>
         </div>
-        <v-btn @click="addStep" class="my-6">Add step</v-btn>
+        <v-btn @click="addStep" class="mb-6">Add step</v-btn>
         <v-text-field v-model="newIngredientName" label="Ingredient name"></v-text-field>
         <v-text-field v-model="newIngredientAmount" label="Amount"></v-text-field>
         <v-select
@@ -66,12 +65,10 @@ import {useStore} from 'vuex';
 import { useRouter } from 'vue-router';
 import Popup from '@/components/Popup.vue';
 export default {
-  data: () => ({
-    errorText: '',
-    dialog: false,
-  }),
   setup() {
     const { replace } = useRouter();
+    let errorText = ref('');
+    let dialog = ref(false);
     const title = ref('');
     const description = ref('');
     const selectedCategories = ref([]);
@@ -118,7 +115,7 @@ export default {
       ingredients.value.splice(index, 1);
     }
     const submitForm = async () => {
-      this.dialog = false;
+      dialog.value = false;
       const recipe = {
         title: title.value,
         description: description.value,
@@ -131,8 +128,8 @@ export default {
         replace('/');
       } catch (err) {
         // alert(err.message || 'Failed to add recipe.');
-        this.dialog = true;
-        this.errorText = ('Failed to login. Check your data');
+        dialog.value = true;
+        errorText.value = err.message || 'Failed to login. Check your data';
       }
     };
 
