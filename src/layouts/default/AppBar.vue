@@ -82,7 +82,8 @@
 // }
 
 header {
-  background-color: transparent;
+  background-color: brown;
+  opacity: 0.7;
   z-index: 99;
   width: 100%;
   position: fixed;
