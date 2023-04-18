@@ -38,13 +38,19 @@
         <v-btn variant="tonal">Register</v-btn>
       </router-link>
     </v-card>
+
+    <Popup :dialog="dialog" :errorText="errorText"/>
   </v-container>
 </template>
 <script>
+import Popup from '@/components/Popup.vue';
+
 export default {
   data: () => ({
     email: '',
+    errorText: '',
     password: '',
+    dialog: false,
     show1: false,
     emailRules: [
       value => {
@@ -72,6 +78,8 @@ export default {
   }),
   methods: {
     async validate() {
+      this.dialog = false;
+
       const {valid} = await this.$refs.myForm.validate()
       if (valid) {
         const data = {
@@ -83,14 +91,16 @@ export default {
           this.$router.replace('/');
         } catch (err) {
           //FIXME:: err.message is: Failed to register.
-          alert(err.message || 'Failed to login. Check your data.');
           // alert(err.message || 'Failed to login. Check your data.');
+          this.dialog = true;
+          this.errorText = ('Failed to login. Check your data');
         }
       } else {
         return true;
       }
     }
-  }
+  },
+  components: {Popup: Popup}
 }
 
 
