@@ -1,5 +1,5 @@
-<template>
-  <v-container fluid class="fill-height">
+ <template>
+  <v-container  fluid class="fill-height">
     <v-card
       class="mx-auto pa-8"
       max-width="344"
@@ -43,7 +43,17 @@
           @click:append="show1 = !show1"
           class="pb-2"
         ></v-text-field>
-        <v-btn type="submit" block class="mt-2" color="success" @click="validate">Register
+        <v-checkbox
+        id="robot"
+      v-model="checkbox"
+      @change="handleVerification($event)"
+      :checked="true"
+      :label=information
+      ></v-checkbox>
+        <v-btn type="submit"
+               block class="mt-2"
+               color="success"
+               @click="validate">Register
           <v-icon icon="mdi-chevron-right" end></v-icon>
         </v-btn>
       </v-form>
@@ -55,14 +65,64 @@
   </v-container>
 </template>
 
+
+
+
+
 <script>
+
 export default {
+
+  mounted(){
+    let web = this;
+    initGeetest4(
+      {
+        // Omit required configuration parameters
+
+        product: "bind",
+        captchaId:'5b49a80c1d016178160d866e71d43fa3',
+      },
+      function (captchaObj) {
+        web.geetest = captchaObj;
+        captchaObj
+          .onReady(function () {
+            // please call the showCaptcha method to show the CAPTCHA when it is ready
+          })
+          .onSuccess(function () {
+            web.handleSubmit();
+            web.information = `I'm not a robot`
+            const robot = document.querySelector('#robot');
+            robot.ariaDisabled = true;
+            robot.disabled = true;
+          })
+
+          .onFail(function() {
+            web.information = 'You are a robot'
+            // robot.checked = false;
+            // robot.value = false;
+            // robot.ariaChecked = false;
+            robot.ariaDisabled = true;
+            robot.disabled = true;
+          })
+          .onError(function () {
+            console.error('error')
+            //your code
+            
+          });
+
+      }
+    );
+  },
+
   data: () => ({
+    information: `I'm not a robot`,
     first: '',
     last: '',
     email: '',
     password: '',
     show1: false,
+    geetest: '',
+    checkbox: false,
     firstNameRules: [
       value => {
         if (!value) {
@@ -112,16 +172,30 @@ export default {
     ],
 
   }),
+
   methods: {
+
+    handleVerification(e){
+      this.geetest.showBox();
+    },
+
+    handleSubmit(){
+      this.submitted = true;
+    },
+
     async validate() {
+
       const {valid} = await this.$refs.myForm.validate()
-      if (valid) {
+
+      // if(this.submitted){
+      if (valid && this.submitted) {
         const data = {
           firstName: this.first,
           lastName: this.last,
           email: this.email,
           password: this.password,
         }
+        
         try {
           await this.$store.dispatch('userRegistration', data);
           this.$router.replace('/');
@@ -131,9 +205,9 @@ export default {
       } else {
         return true;
       }
-    },
+    }},
   }
-}
+// }
 
 </script>
 
