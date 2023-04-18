@@ -50,13 +50,19 @@
         <v-btn type="submit">Submit</v-btn>
         </div>
       </v-form>
+      <Popup :dialog="dialog" :errorText="errorText"/>
   </v-container>
 </template>
 <script>
 import { ref } from 'vue';
 import {useStore} from 'vuex';
 import { useRouter } from 'vue-router';
+import Popup from '@/components/Popup.vue';
 export default {
+  data: () => ({
+    errorText: '',
+    dialog: false,
+  }),
   setup() {
     const { replace } = useRouter();
     const title = ref('');
@@ -105,6 +111,7 @@ export default {
       ingredients.value.splice(index, 1);
     }
     const submitForm = async () => {
+      this.dialog = false;
       const recipe = {
         title: title.value,
         description: description.value,
@@ -116,7 +123,9 @@ export default {
         await store.dispatch('recipeStore/addRecipe', recipe);
         replace('/');
       } catch (err) {
-        alert(err.message || 'Failed to add recipe.');
+        // alert(err.message || 'Failed to add recipe.');
+        this.dialog = true;
+        this.errorText = ('Failed to login. Check your data');
       }
     };
 
@@ -154,7 +163,8 @@ export default {
         },
       }
     };
-  }
+  },
+  components: {Popup: Popup}
 }
 </script>
 

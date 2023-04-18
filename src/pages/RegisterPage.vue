@@ -47,7 +47,6 @@
         id="robot"
       v-model="checkbox"
       @change="handleVerification($event)"
-      :checked="true"
       :label=information
       ></v-checkbox>
         <v-btn type="submit"
@@ -62,6 +61,9 @@
         <v-btn variant="tonal">Login</v-btn>
       </router-link>
     </v-card>
+
+    <Popup :dialog="dialog" :errorText="errorText"/>
+
   </v-container>
 </template>
 
@@ -70,6 +72,8 @@
 
 
 <script>
+
+import Popup from '@/components/Popup.vue';
 
 export default {
 
@@ -97,7 +101,7 @@ export default {
           })
 
           .onFail(function() {
-            web.information = 'You are a robot'
+            web.information = `I'm a robot`
             // robot.checked = false;
             // robot.value = false;
             // robot.ariaChecked = false;
@@ -116,6 +120,7 @@ export default {
 
   data: () => ({
     information: `I'm not a robot`,
+    errorText: '',
     first: '',
     last: '',
     email: '',
@@ -123,6 +128,7 @@ export default {
     show1: false,
     geetest: '',
     checkbox: false,
+    dialog: false,
     firstNameRules: [
       value => {
         if (!value) {
@@ -184,10 +190,10 @@ export default {
     },
 
     async validate() {
+      this.dialog = false;
 
       const {valid} = await this.$refs.myForm.validate()
 
-      // if(this.submitted){
       if (valid && this.submitted) {
         const data = {
           firstName: this.first,
@@ -200,14 +206,19 @@ export default {
           await this.$store.dispatch('userRegistration', data);
           this.$router.replace('/');
         } catch (err) {
-          alert(err.message || 'Failed to register. Check your data');
+          this.dialog = true;
+          this.errorText = (err.message || 'Failed to register. Check your data');
         }
       } else {
-        return true;
+        const invalidForm = 'Fill form to complete register';
+        const invalidCaptcha = `Robot's can't use our page`;
+        this.dialog = true;
+        // !valid?(!this.submitted?(alert(invalidForm)):(alert(invalidCaptcha))):(!this.submitted?(alert(invalidCaptcha)):(alert(invalidForm)));
+        !valid?(!this.submitted?(this.errorText = invalidForm):(this.errorText =invalidCaptcha)):(!this.submitted?(this.errorText =invalidCaptcha):(this.errorText =invalidForm));
       }
     }},
+    components: {Popup: Popup}
   }
-// }
 
 </script>
 
