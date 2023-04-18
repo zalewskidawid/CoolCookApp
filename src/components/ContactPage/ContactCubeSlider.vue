@@ -111,15 +111,22 @@ export default {
 }
 
 .swiper-slide {
-  background-color: salmon;
+  background-color: white;
   width: 100%;
   height: 100%;
 }
 .v-card {
   margin: 10px;
   padding: 10px;
-  background-color: pink;
+  background-color: white;
   width: 90%;
   height: 90%;
+}
+.swiper-cube  {
+  .swiper-cube-shadow {
+    &:before {
+      background: gray !important;
+    }
+  }
 }
 </style>

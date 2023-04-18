@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <v-main>
-      <MainSlider class="test" ></MainSlider>
   <app-bar/>
   <div class="something">
   <router-view  />
@@ -32,12 +31,9 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  // background-image: url("https://gico.io/spcica/images/main-slider/1.jpg");
-  // background-color: black;
-  // opacity: 0.8;
+   background: url("https://gico.io/spcica/images/main-slider/1.jpg");
   background-repeat: repeat-y;
-  background-blend-mode: darken;
-  // background-size:contain;
+   background-size:contain;
   background-size:cover;
   padding-top: 80px;
   min-height: 100vh;
