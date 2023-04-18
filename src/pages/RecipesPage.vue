@@ -1,5 +1,11 @@
 <template>
-  <v-container fluid >
+  <v-container fluid>
+    <v-card
+      class="mx-auto pa-8"
+      max-width="600"
+      title="User Login"
+    >
+    
       <v-form @submit.prevent="submitForm">
         <h2 class="pb-2">Add your recipe</h2>
         <v-text-field v-model="title" label="Recipe title"></v-text-field>
@@ -51,6 +57,7 @@
         </div>
       </v-form>
       <Popup :dialog="dialog" :errorText="errorText"/>
+    </v-card>
   </v-container>
 </template>
 <script>
