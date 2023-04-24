@@ -136,10 +136,30 @@ export default {
         await store.dispatch('ingredientsStore/getIngredientsFromDatabase');
         store.getters["ingredientsStore/getIngredients"].forEach(el => {
           databaseIngredients.value.push(el);
+          // console.log(el)
         })
       } catch (err) {
         dialog.value = true;
         errorText.value = err.message || 'Failed to get ingredients';
+      }
+    }
+    const getRecipesFromDatabase = async () => {
+      dialog.value = false;
+      try{
+        await store.dispatch('recipeStore/getAllRecipes');
+        const data = store.getters['recipeStore/getRecipes']
+        let parsedData = JSON.parse(JSON.stringify(data))
+        console.log(parsedData);
+        const values = (Object.entries(target));
+        values.forEach(element=>{
+          console.log('id', element[0])
+          console.log(element[1].categories)
+        })
+
+
+      }catch(err){
+        dialog.value = true;
+        errorText.value = err.message || 'Failed to get recipes';
       }
     }
     onMounted(()=> {
@@ -147,6 +167,7 @@ export default {
         return
       }
       getIngredientsFromDatabase();
+      getRecipesFromDatabase();
     })
 
     return {
@@ -168,6 +189,7 @@ export default {
       baseDialog,
       databaseIngredients,
       getIngredientsFromDatabase,
+      getRecipesFromDatabase,
       showIngredientPopup
     };
   },
