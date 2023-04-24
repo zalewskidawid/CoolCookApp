@@ -4,7 +4,6 @@
       class="mx-auto pa-8"
       max-width="600"
     >
-
       <v-form @submit.prevent="submitForm">
         <h2 class="pb-2">Add your recipe</h2>
         <v-text-field v-model="title" label="Recipe title"></v-text-field>
@@ -16,8 +15,6 @@
           multiple
           chips
         ></v-select>
-        <v-text-field v-model="newCategory" label="Add new category"></v-text-field>
-        <v-btn @click="addCategory" class="mb-6 me-2">Add category</v-btn>
         <div v-for="(step, index) in steps" :key="index">
           <v-text-field
             v-model="step.description"
@@ -27,7 +24,7 @@
           <v-btn class="my-3 mb-6" @click="removeStep(index)">Remove step</v-btn>
         </div>
         <v-btn @click="addStep" class="mb-6">Add step</v-btn>
-        <v-text-field v-model="newIngredientName" label="Ingredient name"></v-text-field>
+        <v-text-field v-model="newIngredientName" label="Click to add Ingredient name" class="ingredient-input" @click="showIngredientPopup"></v-text-field>
         <v-text-field v-model="newIngredientAmount" label="Amount"></v-text-field>
         <v-select
           v-model="newIngredientWeightType"
@@ -38,7 +35,8 @@
         <div v-for="(ingredient, index) in ingredients" :key="index">
           <v-text-field
             v-model="ingredient.name"
-            label="Name"
+            label="Click to add Ingredient name"
+            class="ingredient-input"
           ></v-text-field>
           <v-text-field
             v-model="ingredient.amount"
@@ -55,40 +53,39 @@
         <v-btn type="submit">Submit</v-btn>
         </div>
       </v-form>
+      <BasePopup :dialog="baseDialog">
+        {{databaseIngredients}}
+      </BasePopup>
       <Popup :dialog="dialog" :errorText="errorText"/>
     </v-card>
   </v-container>
 </template>
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import {useStore} from 'vuex';
 import { useRouter } from 'vue-router';
 import Popup from '@/components/Popup.vue';
+import BasePopup from "@/layouts/default/BasePopup";
 export default {
   setup() {
     const { replace } = useRouter();
     let errorText = ref('');
     let dialog = ref(false);
+    let baseDialog = ref(false);
     const title = ref('');
     const description = ref('');
     const selectedCategories = ref([]);
     const categories = ref(['Appetizers', 'Main dishes', 'Desserts']);
-    const newCategory = ref('');
     const steps = ref([{description: ''}]);
     const newIngredientName = ref('');
     const newIngredientAmount = ref('');
     const newIngredientWeightType = ref('');
     const ingredients = ref([]);
     const weightTypes = ref(['grams', 'ounces', 'pounds']);
+    const databaseIngredients = ref([]);
     const store = useStore();
 
 
-    const addCategory = () => {
-      if (newCategory.value && !categories.value.includes(newCategory.value)) {
-        categories.value.push(newCategory.value);
-        newCategory.value = '';
-      }
-    };
 
     const addStep = () => {
       steps.value.push({description: ''});
@@ -97,7 +94,9 @@ export default {
     const removeStep = (index) => {
       steps.value.splice(index, 1);
     };
-
+    const showIngredientPopup = () => {
+      baseDialog.value = true;
+    }
     const addIngredient = () => {
       if (newIngredientName.value && newIngredientAmount.value && newIngredientWeightType.value) {
         ingredients.value.push({
@@ -127,48 +126,52 @@ export default {
         await store.dispatch('recipeStore/addRecipe', recipe);
         replace('/');
       } catch (err) {
-        // alert(err.message || 'Failed to add recipe.');
         dialog.value = true;
         errorText.value = err.message || 'Failed to login. Check your data';
       }
     };
+    const getIngredientsFromDatabase = async () => {
+      dialog.value = false;
+      try{
+        await store.dispatch('ingredientsStore/getIngredientsFromDatabase');
+        store.getters["ingredientsStore/getIngredients"].forEach(el => {
+          databaseIngredients.value.push(el);
+        })
+      } catch (err) {
+        dialog.value = true;
+        errorText.value = err.message || 'Failed to get ingredients';
+      }
+    }
+    onMounted(()=> {
+      if(databaseIngredients.value.length > 0) {
+        return
+      }
+      getIngredientsFromDatabase();
+    })
 
     return {
       title,
       description,
       selectedCategories,
       categories,
-      newCategory,
       steps,
       newIngredientName,
       newIngredientAmount,
       newIngredientWeightType,
       ingredients,
       weightTypes,
-      addCategory,
       addStep,
       removeStep,
       addIngredient,
       removeIngredient,
       submitForm,
-      methods: {
-        async createPlanFormData(data) {
-          this.isLoading = true;
-          try {
-            await this.$store.dispatch('plans/addNewPlan', data);
-            this.$router.replace('/plans');
-          } catch (err) {
-            this.isLoading = false;
-            this.error = err.message || 'Failed to add new plan.';
-          }
-        },
-        handleError() {
-          this.error = null;
-        },
-      }
+      baseDialog,
+      databaseIngredients,
+      getIngredientsFromDatabase,
+      showIngredientPopup
     };
   },
-  components: {Popup: Popup}
+  components: {BasePopup, Popup: Popup}
 }
 </script>
 
@@ -178,5 +181,8 @@ form {
   border: 1px solid white;
   margin: 10px;
   padding: 30px;
+}
+.ingredient-input {
+  cursor: pointer;
 }
 </style>
