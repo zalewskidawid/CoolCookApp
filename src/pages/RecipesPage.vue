@@ -6,8 +6,8 @@
     >
       <v-form @submit.prevent="submitForm">
         <h2 class="pb-2">Add your recipe</h2>
-        <v-text-field v-model="title" label="Recipe title"></v-text-field>
-        <v-textarea v-model="description" label="Recipe description"></v-textarea>
+        <v-text-field v-model="title" :rules="[v => !!v || 'Title is required']" label="Recipe title"></v-text-field>
+        <v-textarea v-model="description" :rules="[v => !!v || 'Description is required']" label="Recipe description"></v-textarea>
         <v-select
           v-model="selectedCategories"
           :items="categories"
@@ -18,14 +18,15 @@
         <div v-for="(step, index) in steps" :key="index">
           <v-text-field
             v-model="step.description"
+            :rules="[v => !!v || 'Step description is required']"
             :label="'Step ' + (index + 1)"
             :placeholder="'Step ' + (index + 1)"
           ></v-text-field>
           <v-btn class="my-3 mb-6" @click="removeStep(index)">Remove step</v-btn>
         </div>
         <v-btn @click="addStep" class="mb-6">Add step</v-btn>
-        <v-text-field v-model="newIngredientName" label="Click to add Ingredient name" class="ingredient-input" @click="showIngredientPopup"></v-text-field>
-        <v-text-field v-model="newIngredientAmount" label="Amount"></v-text-field>
+        <v-text-field v-model="newIngredientName"  :rules="[v => !!v || 'Ingredient is required']" label="Click to add Ingredient name" class="ingredient-input" @click="showIngredientPopup"></v-text-field>
+        <v-text-field v-model="newIngredientAmount"  :rules="[v => !!v || 'Amount is required']" label="Amount"></v-text-field>
         <v-select
           v-model="newIngredientWeightType"
           :items="weightTypes"
@@ -35,6 +36,7 @@
         <div v-for="(ingredient, index) in ingredients" :key="index">
           <v-text-field
             v-model="ingredient.name"
+            :rules="[v => !!v || 'Ingredient is required']"
             label="Click to add Ingredient name"
             class="ingredient-input"
           ></v-text-field>
@@ -169,6 +171,7 @@ export default {
       databaseIngredients,
       getIngredientsFromDatabase,
       showIngredientPopup
+
     };
   },
   components: {BasePopup, Popup: Popup}
