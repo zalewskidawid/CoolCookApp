@@ -33,6 +33,7 @@
           class="pb-2"
         ></v-text-field>
         <v-text-field
+          id="password"
           v-model="password"
           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
           :rules='passwordRules'
@@ -43,6 +44,19 @@
           @click:append="show1 = !show1"
           class="pb-2"
         ></v-text-field>
+        <v-text-field
+          id="confirmPassword"
+          v-model="confirmPassword"
+          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+          :rules="[ () => this.passwordsMatch() || 'Passwords do not match']"
+          :type="show1 ? 'text' : 'password'"
+          label="Confirm password"
+          placeholder="Enter your password again."
+          variant="underlined"
+          @click:append="show1 = !show1"
+          class="pb-2"
+        ></v-text-field>
+
         <v-checkbox
         id="robot"
       v-model="checkbox"
@@ -111,7 +125,7 @@ export default {
           .onError(function () {
             console.error('error')
             //your code
-            
+
           });
 
       }
@@ -125,6 +139,7 @@ export default {
     last: '',
     email: '',
     password: '',
+    confirmPassword: '',
     show1: false,
     geetest: '',
     checkbox: false,
@@ -133,12 +148,13 @@ export default {
       value => {
         if (!value) {
           return 'You must enter a firstname.';
-        } else if (!(/^[a-zA-Z]'?([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]|\.| |-)+$/.test(value))) {
-          return 'First name cannot contain any number and special chars.'
         } else if (value.length < 2) {
           return 'First name length must be greater than one.'
         } else if (value.length > 40) {
           return 'First name length must be lower than fourty.'
+        }
+        else if (!(/^[a-zA-Z]'?([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]|\.| |-)+$/.test(value))) {
+          return 'First name cannot contain any number and special chars.'
         }
       },
     ],
@@ -146,13 +162,14 @@ export default {
       value => {
         if (!value) {
           return 'You must enter a lastname.'
-        } else if  (!(/^[a-zA-Z]'?([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]|\.| |-)+$/.test(value))) {
-          return 'Last name cannot contain any numbers and special chars.'
-        } else if (value.length < 2) {
+        }  else if (value.length < 2) {
           return 'Last name length must be greater than one.'
         }
         else if (value.length > 40) {
           return 'Last name length must be lower than fourty.'
+        }
+        else if  (!(/^[a-zA-Z]'?([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]|\.| |-)+$/.test(value))) {
+          return 'Last name cannot contain any numbers and special chars.'
         }
       },
     ],
@@ -177,9 +194,16 @@ export default {
       },
     ],
 
+
+
+
   }),
 
   methods: {
+
+    passwordsMatch() {
+      return this.password === this.confirmPassword;
+    },
 
     handleVerification(e){
       this.geetest.showBox();
@@ -201,7 +225,7 @@ export default {
           email: this.email,
           password: this.password,
         }
-        
+
         try {
           await this.$store.dispatch('userRegistration', data);
           this.$router.replace('/');
