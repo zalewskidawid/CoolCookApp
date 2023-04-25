@@ -5,6 +5,7 @@ import Contact from '@/pages/ContactPage';
 import LoginForm from '@/pages/LoginPage';
 import RegisterForm from '@/pages/RegisterPage';
 import Recipes from '@/pages/RecipesPage';
+import FullRecipe from '@/components/RecipesPage/FullRecipe';
 import AboutMe from '@/pages/AboutMe';
 
 const routes = [
@@ -15,6 +16,11 @@ const routes = [
   {
     path: '/Recipes',
     component: Recipes,
+  },
+  {
+    path: '/Recipes/:id',
+    name: 'showRecipe',
+    component: FullRecipe
   },
   {
     path: '/Login',
