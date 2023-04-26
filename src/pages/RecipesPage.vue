@@ -1,10 +1,36 @@
 <template>
   <v-container fluid>
-    <v-card
-      class="mx-auto pa-8"
-      max-width="600"
+    <v-card       class="mx-auto"
+      max-width="600">
+    <v-tabs
+      v-model="tab"
+      bg-color="deep-purple-accent-4"
+      centered
+      stacked
     >
-      <v-form @submit.prevent="submitForm">
+      <v-tab value="tab-1">
+        <v-icon>mdi-plus</v-icon>
+        Add recipe
+      </v-tab>
+
+      <v-tab value="tab-2">
+        <v-icon>mdi-eye</v-icon>
+        Show all recipes
+      </v-tab>
+
+      <v-tab value="tab-3">
+        <v-icon>mdi-star</v-icon>
+        Favourties
+      </v-tab>
+    </v-tabs>
+
+    <v-window v-model="tab">
+      <v-window-item
+        key="1"
+        value="tab-1"
+      >
+        <v-card>
+          <v-form @submit.prevent="submitForm" ref="addRecipeForm">
         <h2 class="pb-2">Add your recipe</h2>
         <v-text-field v-model="title" :rules="[v => !!v || 'Title is required']" label="Recipe title"></v-text-field>
         <v-textarea v-model="description" :rules="[v => !!v || 'Description is required']" label="Recipe description"></v-textarea>
@@ -55,11 +81,36 @@
         <v-btn type="submit">Submit</v-btn>
         </div>
       </v-form>
+        </v-card>
+      </v-window-item>
+      <v-window-item
+        key="2"
+        value="tab-2"
+      >
+        <v-card>
+          <div v-for="recipe in recipes">
+      <Recipe :title="recipe.title"
+              :categories="recipe.categories"
+              :description="recipe.description"
+              :id="recipe.id"
+      ></Recipe>
+    </div>
+        </v-card>
+      </v-window-item>
+      <v-window-item
+        key="3"
+        value="tab-3"
+      >
+        <v-card>
+          <v-card-text>{{ text }}</v-card-text>
+        </v-card>
+      </v-window-item>
+    </v-window>
+  </v-card>
       <BasePopup :dialog="baseDialog">
         {{databaseIngredients}}
       </BasePopup>
       <Popup :dialog="dialog" :errorText="errorText"/>
-    </v-card>
   </v-container>
 </template>
 <script>
@@ -68,7 +119,15 @@ import {useStore} from 'vuex';
 import { useRouter } from 'vue-router';
 import Popup from '@/components/Popup.vue';
 import BasePopup from "@/layouts/default/BasePopup";
+import Recipe from "@/components/RecipesPage/Recipe";
+
 export default {
+  data () {
+      return {
+        tab: null,
+        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      }
+    },
   setup() {
     const { replace } = useRouter();
     let errorText = ref('');
@@ -86,6 +145,9 @@ export default {
     const weightTypes = ref(['grams', 'ounces', 'pounds']);
     const databaseIngredients = ref([]);
     const store = useStore();
+    const recipes = ref([{}]);
+    const recipesCategories = ref([]);
+    // {id: '', title: '', description: '', categories: [''], steps: ['']}
 
 
 
@@ -117,19 +179,22 @@ export default {
     }
     const submitForm = async () => {
       dialog.value = false;
-      const recipe = {
-        title: title.value,
-        description: description.value,
-        categories: selectedCategories.value,
-        steps: steps.value.map((step) => step.description),
-        ingredients: ingredients.value,
-      };
-      try {
-        await store.dispatch('recipeStore/addRecipe', recipe);
-        replace('/');
-      } catch (err) {
-        dialog.value = true;
-        errorText.value = err.message || 'Failed to login. Check your data';
+      const {valid} = await this.$refs.addRecipeForm.validate()
+      if(valid & this.submitted) {
+        const recipe = {
+          title: title.value,
+          description: description.value,
+          categories: selectedCategories.value,
+          steps: steps.value.map((step) => step.description),
+          ingredients: ingredients.value,
+        };
+        try {
+          await store.dispatch('recipeStore/addRecipe', recipe);
+          replace('/');
+        } catch (err) {
+          dialog.value = true;
+          errorText.value = err.message || 'Failed to login. Check your data';
+        }
       }
     };
     const getIngredientsFromDatabase = async () => {
@@ -138,17 +203,41 @@ export default {
         await store.dispatch('ingredientsStore/getIngredientsFromDatabase');
         store.getters["ingredientsStore/getIngredients"].forEach(el => {
           databaseIngredients.value.push(el);
+          // console.log(el)
         })
       } catch (err) {
         dialog.value = true;
         errorText.value = err.message || 'Failed to get ingredients';
       }
     }
+    const getRecipesFromDatabase = async () => {
+      dialog.value = false;
+      try{
+        await store.dispatch('recipeStore/getAllRecipes');
+        const data = store.getters['recipeStore/getRecipes']
+        let parsedData = JSON.parse(JSON.stringify(data))
+        const values = (Object.entries(parsedData));
+
+        values.forEach(element=>{
+          recipes.value.push({id: element[0], ...element[1]});
+          recipesCategories.value.push(element[1].categories);
+        })
+        // const result = JSON.parse(JSON.stringify(recipes.value));
+
+      }catch(err){
+        dialog.value = true;
+        errorText.value = err.message || 'Failed to get recipes';
+      }
+    }
     onMounted(()=> {
       if(databaseIngredients.value.length > 0) {
         return
       }
+      // if(recipesCategories.value.length > 0) {
+      //   return
+      // }
       getIngredientsFromDatabase();
+      getRecipesFromDatabase();
     })
 
     return {
@@ -169,12 +258,15 @@ export default {
       submitForm,
       baseDialog,
       databaseIngredients,
+      recipesCategories,
+      recipes,
       getIngredientsFromDatabase,
+      getRecipesFromDatabase,
       showIngredientPopup
 
     };
   },
-  components: {BasePopup, Popup: Popup}
+  components: {BasePopup, Popup: Popup, Recipe}
 }
 </script>
 
