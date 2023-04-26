@@ -30,7 +30,7 @@
         value="tab-1"
       >
         <v-card>
-          <v-form @submit.prevent="submitForm">
+          <v-form @submit.prevent="submitForm" ref="addRecipeForm">
         <h2 class="pb-2">Add your recipe</h2>
         <v-text-field v-model="title" :rules="[v => !!v || 'Title is required']" label="Recipe title"></v-text-field>
         <v-textarea v-model="description" :rules="[v => !!v || 'Description is required']" label="Recipe description"></v-textarea>
@@ -179,19 +179,22 @@ export default {
     }
     const submitForm = async () => {
       dialog.value = false;
-      const recipe = {
-        title: title.value,
-        description: description.value,
-        categories: selectedCategories.value,
-        steps: steps.value.map((step) => step.description),
-        ingredients: ingredients.value,
-      };
-      try {
-        await store.dispatch('recipeStore/addRecipe', recipe);
-        replace('/');
-      } catch (err) {
-        dialog.value = true;
-        errorText.value = err.message || 'Failed to login. Check your data';
+      const {valid} = await this.$refs.addRecipeForm.validate()
+      if(valid & this.submitted) {
+        const recipe = {
+          title: title.value,
+          description: description.value,
+          categories: selectedCategories.value,
+          steps: steps.value.map((step) => step.description),
+          ingredients: ingredients.value,
+        };
+        try {
+          await store.dispatch('recipeStore/addRecipe', recipe);
+          replace('/');
+        } catch (err) {
+          dialog.value = true;
+          errorText.value = err.message || 'Failed to login. Check your data';
+        }
       }
     };
     const getIngredientsFromDatabase = async () => {
@@ -219,11 +222,8 @@ export default {
           recipes.value.push({id: element[0], ...element[1]});
           recipesCategories.value.push(element[1].categories);
         })
-        const result = JSON.parse(JSON.stringify(recipes.value));
-        // console.log(result);
-        // console.log(recipes.value[1].categories)
-        // console.log(recipes.value[1].categories[0])
-        
+        // const result = JSON.parse(JSON.stringify(recipes.value));
+
       }catch(err){
         dialog.value = true;
         errorText.value = err.message || 'Failed to get recipes';
