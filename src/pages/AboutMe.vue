@@ -4,7 +4,7 @@
       <img :src="photoUrl" alt="devPhoto"/>
       <h1>Hello I'm <span>{{ name }}</span> </h1>
       <slot>
-        <h2>&lt&ltWrite more information here&gt&gt</h2>
+        <h2>Write more information here</h2>
       </slot>
       <v-card-actions>
         <v-btn  @click="goBack()" >go back</v-btn>
