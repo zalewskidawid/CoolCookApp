@@ -32,9 +32,9 @@
           <v-card>
             <v-form @submit.prevent="submitForm" ref="addRecipeForm">
               <h2 class="pb-2">Add your recipe</h2>
-              <v-text-field v-model="title" :rules="[v => !!v || 'Title is required']"
+              <v-text-field v-model="title" :rules="titleRules"
                             label="Recipe title"></v-text-field>
-              <v-textarea v-model="description" :rules="[v => !!v || 'Description is required']"
+              <v-textarea v-model="description" :rules="descriptionRules"
                           label="Recipe description"></v-textarea>
               <v-select
                 v-model="selectedCategories"
@@ -46,7 +46,7 @@
               <div v-for="(step, index) in steps" :key="index">
                 <v-text-field
                   v-model="step.description"
-                  :rules="[v => !!v || 'Step description is required']"
+                  :rules="stepRules"
                   :label="'Step ' + (index + 1)"
                   :placeholder="'Step ' + (index + 1)"
                 ></v-text-field>
@@ -56,7 +56,7 @@
               <v-text-field v-model="newIngredientName" :rules="[v => !!v || 'Ingredient is required']"
                             label="Click to add Ingredient name" class="ingredient-input"
                             @click="showIngredientPopup"></v-text-field>
-              <v-text-field v-model="newIngredientAmount" :rules="[v => !!v || 'Amount is required']"
+              <v-text-field v-model="newIngredientAmount"  :rules="amountRules"
                             label="Amount"></v-text-field>
               <v-select
                 v-model="newIngredientWeightType"
@@ -74,6 +74,8 @@
                 <v-text-field
                   v-model="ingredient.amount"
                   label="Amount"
+                  :rules="amountRules"
+
                 ></v-text-field>
                 <v-select
                   v-model="ingredient.weightType"
@@ -140,7 +142,59 @@ export default {
       tab: null,
       text: 'dsadsadas',
       searchIngredient: '',
-      filteredArray: this.databaseIngredients
+      filteredArray: this.databaseIngredients,
+      titleRules: [value => {
+        if (!value) {
+          return 'You must enter a title.';
+        } else if (value.length < 2) {
+          return 'Title length must be greater than one.'
+        } else if (value.length > 40) {
+          return 'Title length must be lower than fourty.'
+        }
+        else if (!(/^[a-zA-Z]'?([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]|\.| |-)+$/.test(value))) {
+          return 'Title cannot contain any number and special chars.'
+        }
+      },
+      ],
+      descriptionRules: [value => {
+        if (!value) {
+          return 'You must enter a description.';
+        } else if (value.length < 2) {
+          return 'Description length must be greater than one.'
+        }
+      },
+      ],
+      stepRules: [value => {
+        if (!value) {
+          return 'You must enter a step.';
+        } else if (value.length < 2) {
+          return 'Step length must be greater than one.'
+        } else if (value.length > 200) {
+          return 'Step length must be lower than two hundred.'
+        }
+        else if (/[!@#$%^&*()_+\-?/'":><.,]/.test(value)) {
+          return 'Step cannot contain any special chars.'
+        }
+
+      },
+      ],
+      amountRules: [value => {
+        if (!value) {
+          return 'You must enter a amount.';
+        }
+        else if (!/^[0-9]+$/.test(value)) {
+          return 'Amount must contain only numbers.'
+        }
+        else if (value.length < 2) {
+          return 'Amount length must be greater than one.'
+        } else if (value.length > 6) {
+          return 'Amount length must be lower than six chars.'
+        }
+
+
+      },
+      ]
+
     }
   },
   methods: {
