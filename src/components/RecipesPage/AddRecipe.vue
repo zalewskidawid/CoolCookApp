@@ -1,0 +1,304 @@
+<template>
+              <v-card>
+            <v-form @submit.prevent="submitForm" ref="addRecipeForm">
+              <h2 class="pb-2">Add your recipe</h2>
+              <v-text-field v-model="title" :rules="titleRules"
+                            label="Recipe title"></v-text-field>
+              <v-textarea v-model="description" :rules="descriptionRules"
+                          label="Recipe description"></v-textarea>
+              <v-select
+                v-model="selectedCategories"
+                :items="categories"
+                label="Categories"
+                multiple
+                chips
+              ></v-select>
+              <div v-for="(step, index) in steps" :key="index">
+                <v-text-field
+                  v-model="step.description"
+                  :rules="stepRules"
+                  :label="'Step ' + (index + 1)"
+                  :placeholder="'Step ' + (index + 1)"
+                ></v-text-field>
+                <v-btn class="my-3 mb-6" @click="removeStep(index)">Remove step</v-btn>
+              </div>
+              <v-btn @click="addStep" class="mb-6">Add step</v-btn>
+              <v-text-field v-model="newIngredientName" :rules="[v => !!v || 'Ingredient is required']"
+                            label="Click to add Ingredient name" class="ingredient-input"
+                            @click="showIngredientPopup"></v-text-field>
+              <v-text-field v-model="newIngredientAmount"  :rules="amountRules"
+                            label="Amount"></v-text-field>
+              <v-select
+                v-model="newIngredientWeightType"
+                :items="weightTypes"
+                label="Weight type"
+              ></v-select>
+              <v-btn @click="addIngredient" class="mb-6">Add ingredient</v-btn>
+              <div v-for="(ingredient, index) in ingredients" :key="index">
+                <v-text-field
+                  v-model="ingredient.name"
+                  :rules="[v => !!v || 'Ingredient is required']"
+                  label="Click to add Ingredient name"
+                  class="ingredient-input"
+                ></v-text-field>
+                <v-text-field
+                  v-model="ingredient.amount"
+                  label="Amount"
+                  :rules="amountRules"
+
+                ></v-text-field>
+                <v-select
+                  v-model="ingredient.weightType"
+                  :items="weightTypes"
+                  label="Weight type"
+                ></v-select>
+                <v-btn @click="removeIngredient(index)">Remove ingredient</v-btn>
+              </div>
+              <div class="pt-5">
+                <v-btn type="submit">Submit</v-btn>
+              </div>
+            </v-form>
+          </v-card>
+
+          <BasePopup :base-dialog="baseDialog" @close-popup="closeIngredientsPopup">
+      <v-text-field @input="filterIngredients" v-model="searchIngredient" label="Search Ingredient"
+                    placeholder="Ingredient name"></v-text-field>
+      <div class="ingredients-search-wrapper">
+        <p v-if="filteredArray.length === 0">No ingredients found.</p>
+        <div v-for="(ingredient, index) in filteredArray" :key="index" class="my-2">
+          <p @click="addIngredientToInput(ingredient)" class="pb-2 ingredient-search-name">{{ ingredient }}</p>
+          <v-divider></v-divider>
+        </div>
+      </div>
+    </BasePopup>
+    <Popup :dialog="dialog" :errorText="errorText"/>
+
+  </template>
+  
+  <script>
+import {ref, onMounted} from 'vue';
+import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
+import Popup from '@/components/Popup.vue';
+import BasePopup from "@/layouts/default/BasePopup";
+import Recipe from "@/components/RecipesPage/Recipe";
+
+export default {
+  data() {
+    return {
+      tab: null,
+      text: 'dsadsadas',
+      searchIngredient: '',
+      filteredArray: this.databaseIngredients,
+      titleRules: [value => {
+        if (!value) {
+          return 'You must enter a title.';
+        } else if (value.length < 2) {
+          return 'Title length must be greater than one.'
+        } else if (value.length > 40) {
+          return 'Title length must be lower than fourty.'
+        }
+        else if (!(/^[a-zA-Z]'?([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]|\.| |-)+$/.test(value))) {
+          return 'Title cannot contain any number and special chars.'
+        }
+      },
+      ],
+      descriptionRules: [value => {
+        if (!value) {
+          return 'You must enter a description.';
+        } else if (value.length < 2) {
+          return 'Description length must be greater than one.'
+        }
+      },
+      ],
+      stepRules: [value => {
+        if (!value) {
+          return 'You must enter a step.';
+        } else if (value.length < 2) {
+          return 'Step length must be greater than one.'
+        } else if (value.length > 200) {
+          return 'Step length must be lower than two hundred.'
+        }
+        else if (/[!@#$%^&*()_+\-?/'":><.,]/.test(value)) {
+          return 'Step cannot contain any special chars.'
+        }
+
+      },
+      ],
+      amountRules: [value => {
+        if (!value) {
+          return 'You must enter a amount.';
+        }
+        else if (!/^[0-9]+$/.test(value)) {
+          return 'Amount must contain only numbers.'
+        }
+        else if (value.length < 2) {
+          return 'Amount length must be greater than one.'
+        } else if (value.length > 6) {
+          return 'Amount length must be lower than six chars.'
+        }
+
+
+      },
+      ]
+
+    }
+  },
+  methods: {
+    closeIngredientsPopup() {
+      this.baseDialog = false;
+      this.searchIngredient = '';
+      this.filteredArray = this.databaseIngredients;
+    },
+    addIngredientToInput(ingredient) {
+      this.newIngredientName = ingredient;
+      this.baseDialog = false;
+    },
+    filterIngredients() {
+      this.filteredArray = [];
+      this.databaseIngredients.filter(el => {
+        if (el.toString().startsWith(this.searchIngredient)) {
+          this.filteredArray.push(el);
+        }
+      })
+    }
+  },
+  setup() {
+    const {replace} = useRouter();
+    let errorText = ref('');
+    let dialog = ref(false);
+    let baseDialog = ref(false);
+    const title = ref('');
+    const description = ref('');
+    const selectedCategories = ref([]);
+    const categories = ref(['Appetizers', 'Main dishes', 'Desserts']);
+    const steps = ref([{description: ''}]);
+    const newIngredientName = ref('');
+    const newIngredientAmount = ref('');
+    const newIngredientWeightType = ref('');
+    const ingredients = ref([]);
+    const weightTypes = ref(['grams', 'ounces', 'pounds']);
+    const databaseIngredients = ref([]);
+    const store = useStore();
+
+    const addStep = () => {
+      steps.value.push({description: ''});
+    };
+
+    const removeStep = (index) => {
+      steps.value.splice(index, 1);
+    };
+    const showIngredientPopup = () => {
+      baseDialog.value = true;
+    }
+    const addIngredient = () => {
+      if (newIngredientName.value && newIngredientAmount.value && newIngredientWeightType.value) {
+        ingredients.value.push({
+          name: newIngredientName.value,
+          amount: newIngredientAmount.value,
+          weightType: newIngredientWeightType.value,
+        });
+        newIngredientName.value = '';
+        newIngredientAmount.value = '';
+        newIngredientWeightType.value = '';
+      }
+    };
+
+    const removeIngredient = (index) => {
+      ingredients.value.splice(index, 1);
+    }
+    const submitForm = async () => {
+      dialog.value = false;
+      const {valid} = await this.$refs.addRecipeForm.validate()
+      if (valid & this.submitted) {
+        const recipe = {
+          title: title.value,
+          description: description.value,
+          categories: selectedCategories.value,
+          steps: steps.value.map((step) => step.description),
+          ingredients: ingredients.value,
+        };
+        try {
+          await store.dispatch('recipeStore/addRecipe', recipe);
+          replace('/');
+        } catch (err) {
+          dialog.value = true;
+          errorText.value = err.message || 'Failed to login. Check your data';
+        }
+      }
+    };
+    const getIngredientsFromDatabase = async () => {
+      dialog.value = false;
+      try {
+        await store.dispatch('ingredientsStore/getIngredientsFromDatabase');
+        store.getters["ingredientsStore/getIngredients"].forEach(el => {
+          databaseIngredients.value.push(el);
+        })
+      } catch (err) {
+        dialog.value = true;
+        errorText.value = err.message || 'Failed to get ingredients';
+      }
+    }
+    onMounted(() => {
+      if (databaseIngredients.value.length > 0) {
+        return
+      }
+
+      getIngredientsFromDatabase();
+    })
+
+    return {
+      title,
+      description,
+      selectedCategories,
+      categories,
+      steps,
+      newIngredientName,
+      newIngredientAmount,
+      newIngredientWeightType,
+      ingredients,
+      weightTypes,
+      addStep,
+      removeStep,
+      addIngredient,
+      removeIngredient,
+      submitForm,
+      baseDialog,
+      databaseIngredients,
+      getIngredientsFromDatabase,
+      showIngredientPopup
+
+    };
+  },
+  components: {BasePopup, Popup: Popup}
+}
+</script>
+  
+<style lang="scss" scoped>
+form {
+  background: white;
+  border: 1px solid white;
+  margin: 10px;
+  padding: 30px;
+}
+
+.ingredient-input {
+  cursor: pointer;
+}
+
+.ingredients-header {
+  background-color: black;
+  color: white;
+  padding: 0 60px;
+}
+
+.ingredient-search-name {
+  cursor: pointer;
+}
+.ingredients-search-wrapper {
+  max-height: 250px;
+  overflow-y: scroll;
+  padding-right: 10px;
+}
+</style>
+  
