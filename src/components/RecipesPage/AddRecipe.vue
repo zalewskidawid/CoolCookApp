@@ -64,7 +64,7 @@
       <v-text-field @input="filterIngredients" v-model="searchIngredient" label="Search Ingredient"
                     placeholder="Ingredient name"></v-text-field>
       <div class="ingredients-search-wrapper">
-        <p v-if="filteredArray.length === 0">No ingredients found.</p>
+        <p v-if="!filteredArray">No ingredients found.</p>
         <div v-for="(ingredient, index) in filteredArray" :key="index" class="my-2">
           <p @click="addIngredientToInput(ingredient)" class="pb-2 ingredient-search-name">{{ ingredient }}</p>
           <v-divider></v-divider>
@@ -87,9 +87,22 @@ export default {
   data() {
     return {
       tab: null,
-      text: 'dsadsadas',
       searchIngredient: '',
       filteredArray: this.databaseIngredients,
+      errorText: '',
+      dialog : false,
+      baseDialog : false,
+      title : '',
+      description : '',
+      selectedCategories : [],
+      categories : ['Appetizers', 'Main dishes', 'Desserts'],
+      steps : [{description: ''}],
+      newIngredientName : '',
+      newIngredientAmount : '',
+      newIngredientWeightType : '',
+      ingredients : [],
+      weightTypes : ['grams', 'ounces', 'pounds'],
+      databaseIngredients : [],
       titleRules: [value => {
         if (!value) {
           return 'You must enter a title.';
@@ -132,13 +145,9 @@ export default {
         else if (!/^[0-9]+$/.test(value)) {
           return 'Amount must contain only numbers.'
         }
-        else if (value.length < 2) {
-          return 'Amount length must be greater than one.'
-        } else if (value.length > 6) {
+         else if (value.length > 6) {
           return 'Amount length must be lower than six chars.'
         }
-
-
       },
       ]
 
@@ -161,114 +170,72 @@ export default {
           this.filteredArray.push(el);
         }
       })
-    }
-  },
-  setup() {
-    const {replace} = useRouter();
-    let errorText = ref('');
-    let dialog = ref(false);
-    let baseDialog = ref(false);
-    const title = ref('');
-    const description = ref('');
-    const selectedCategories = ref([]);
-    const categories = ref(['Appetizers', 'Main dishes', 'Desserts']);
-    const steps = ref([{description: ''}]);
-    const newIngredientName = ref('');
-    const newIngredientAmount = ref('');
-    const newIngredientWeightType = ref('');
-    const ingredients = ref([]);
-    const weightTypes = ref(['grams', 'ounces', 'pounds']);
-    const databaseIngredients = ref([]);
-    const store = useStore();
+    },
 
-    const addStep = () => {
-      steps.value.push({description: ''});
-    };
-
-    const removeStep = (index) => {
-      steps.value.splice(index, 1);
-    };
-    const showIngredientPopup = () => {
-      baseDialog.value = true;
-    }
-    const addIngredient = () => {
-      if (newIngredientName.value && newIngredientAmount.value && newIngredientWeightType.value) {
-        ingredients.value.push({
-          name: newIngredientName.value,
-          amount: newIngredientAmount.value,
-          weightType: newIngredientWeightType.value,
+    addStep() {
+      this.steps.push({description: ''});
+    },
+    removeStep(index) {
+      this.steps.splice(index, 1);
+    },
+    showIngredientPopup(){
+      this.baseDialog = true;
+    },
+    addIngredient(){
+      if (this.newIngredientName && this.newIngredientAmount && this.newIngredientWeightType) {
+        this.ingredients.push({
+          name: this.newIngredientName,
+          amount: this.newIngredientAmount,
+          weightType: this.newIngredientWeightType,
         });
-        newIngredientName.value = '';
-        newIngredientAmount.value = '';
-        newIngredientWeightType.value = '';
+        this.newIngredientName = '';
+        this.newIngredientAmount = '';
+        this.newIngredientWeightType = '';
       }
-    };
-
-    const removeIngredient = (index) => {
-      ingredients.value.splice(index, 1);
-    }
-    const submitForm = async () => {
-      dialog.value = false;
+    },
+    removeIngredient(index){
+      this.ingredients.splice(index, 1);
+    },
+    async submitForm(){
+      this.dialog = false;
       const {valid} = await this.$refs.addRecipeForm.validate()
-      if (valid & this.submitted) {
+      if (valid) {
         const recipe = {
-          title: title.value,
-          description: description.value,
-          categories: selectedCategories.value,
-          steps: steps.value.map((step) => step.description),
-          ingredients: ingredients.value,
+          title: this.title,
+          description: this.description,
+          categories: this.selectedCategories,
+          steps: this.steps.map((step) => step.description),
+          ingredients: this.ingredients,
         };
         try {
-          await store.dispatch('recipeStore/addRecipe', recipe);
-          replace('/');
+          await this.$store.dispatch('recipeStore/addRecipe', recipe);
+          this.$router.replace('/');
         } catch (err) {
-          dialog.value = true;
-          errorText.value = err.message || 'Failed to login. Check your data';
+          this.dialog = true;
+          this.errorText = err.message || 'Failed to login. Check your data';
         }
       }
-    };
-    const getIngredientsFromDatabase = async () => {
-      dialog.value = false;
+    },
+    async getIngredientsFromDatabase(){
+      this.dialog = false;
       try {
-        await store.dispatch('ingredientsStore/getIngredientsFromDatabase');
-        store.getters["ingredientsStore/getIngredients"].forEach(el => {
-          databaseIngredients.value.push(el);
+        await this.$store.dispatch('ingredientsStore/getIngredientsFromDatabase');
+        this.$store.getters["ingredientsStore/getIngredients"].forEach(el => {
+          this.databaseIngredients.push(el);
         })
       } catch (err) {
-        dialog.value = true;
-        errorText.value = err.message || 'Failed to get ingredients';
+        this.dialog = true;
+        this.errorText = err.message || 'Failed to get ingredients';
       }
+
     }
-    onMounted(() => {
-      if (databaseIngredients.value.length > 0) {
+  },
+  mounted(){
+          if (this.databaseIngredients.length > 0) {
         return
       }
-
-      getIngredientsFromDatabase();
-    })
-
-    return {
-      title,
-      description,
-      selectedCategories,
-      categories,
-      steps,
-      newIngredientName,
-      newIngredientAmount,
-      newIngredientWeightType,
-      ingredients,
-      weightTypes,
-      addStep,
-      removeStep,
-      addIngredient,
-      removeIngredient,
-      submitForm,
-      baseDialog,
-      databaseIngredients,
-      getIngredientsFromDatabase,
-      showIngredientPopup
-
-    };
+    this.getIngredientsFromDatabase();
+    this.filteredArray = this.databaseIngredients;
   },
   components: {BasePopup, Popup: Popup}
 }
