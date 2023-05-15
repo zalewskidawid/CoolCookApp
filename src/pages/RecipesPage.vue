@@ -8,14 +8,14 @@
       centered
       stacked
     >
-      <v-tab value="tab-1">
-        <v-icon>mdi-plus</v-icon>
-        Add recipe
-      </v-tab>
 
-      <v-tab value="tab-2">
+      <v-tab value="tab-1">
         <v-icon>mdi-eye</v-icon>
         Show all recipes
+      </v-tab>
+      <v-tab @click="checkLoginStatus" value="tab-2">
+        <v-icon>mdi-plus</v-icon>
+        Add recipe
       </v-tab>
 
       <v-tab value="tab-3">
@@ -30,57 +30,13 @@
         value="tab-1"
       >
         <v-card>
-          <v-form @submit.prevent="submitForm" ref="addRecipeForm">
-        <h2 class="pb-2">Add your recipe</h2>
-        <v-text-field v-model="title" :rules="[v => !!v || 'Title is required']" label="Recipe title"></v-text-field>
-        <v-textarea v-model="description" :rules="[v => !!v || 'Description is required']" label="Recipe description"></v-textarea>
-        <v-select
-          v-model="selectedCategories"
-          :items="categories"
-          label="Categories"
-          multiple
-          chips
-        ></v-select>
-        <div v-for="(step, index) in steps" :key="index">
-          <v-text-field
-            v-model="step.description"
-            :rules="[v => !!v || 'Step description is required']"
-            :label="'Step ' + (index + 1)"
-            :placeholder="'Step ' + (index + 1)"
-          ></v-text-field>
-          <v-btn class="my-3 mb-6" @click="removeStep(index)">Remove step</v-btn>
-        </div>
-        <v-btn @click="addStep" class="mb-6">Add step</v-btn>
-        <v-text-field v-model="newIngredientName"  :rules="[v => !!v || 'Ingredient is required']" label="Click to add Ingredient name" class="ingredient-input" @click="showIngredientPopup"></v-text-field>
-        <v-text-field v-model="newIngredientAmount"  :rules="[v => !!v || 'Amount is required']" label="Amount"></v-text-field>
-        <v-select
-          v-model="newIngredientWeightType"
-          :items="weightTypes"
-          label="Weight type"
-        ></v-select>
-        <v-btn @click="addIngredient" class="mb-6">Add ingredient</v-btn>
-        <div v-for="(ingredient, index) in ingredients" :key="index">
-          <v-text-field
-            v-model="ingredient.name"
-            :rules="[v => !!v || 'Ingredient is required']"
-            label="Click to add Ingredient name"
-            class="ingredient-input"
-          ></v-text-field>
-          <v-text-field
-            v-model="ingredient.amount"
-            label="Amount"
-          ></v-text-field>
-          <v-select
-            v-model="ingredient.weightType"
-            :items="weightTypes"
-            label="Weight type"
-          ></v-select>
-          <v-btn @click="removeIngredient(index)">Remove ingredient</v-btn>
-        </div>
-        <div class="pt-5">
-        <v-btn type="submit">Submit</v-btn>
-        </div>
-      </v-form>
+          <div v-for="recipe in recipes" :key="recipe.id">
+            <Recipe :title="recipe.title"
+                    :categories="recipe.categories"
+                    :description="recipe.description"
+                    :id="recipe.id"
+            ></Recipe>
+          </div>
         </v-card>
       </v-window-item>
       <v-window-item
@@ -88,13 +44,57 @@
         value="tab-2"
       >
         <v-card>
-          <div v-for="recipe in recipes">
-      <Recipe :title="recipe.title"
-              :categories="recipe.categories"
-              :description="recipe.description"
-              :id="recipe.id"
-      ></Recipe>
-    </div>
+          <v-form @submit.prevent="submitForm" ref="addRecipeForm">
+            <h2 class="pb-2">Add your recipe</h2>
+            <v-text-field v-model="title" :rules="[v => !!v || 'Title is required']" label="Recipe title"></v-text-field>
+            <v-textarea v-model="description" :rules="[v => !!v || 'Description is required']" label="Recipe description"></v-textarea>
+            <v-select
+              v-model="selectedCategories"
+              :items="categories"
+              label="Categories"
+              multiple
+              chips
+            ></v-select>
+            <div v-for="(step, index) in steps" :key="index">
+              <v-text-field
+                v-model="step.description"
+                :rules="[v => !!v || 'Step description is required']"
+                :label="'Step ' + (index + 1)"
+                :placeholder="'Step ' + (index + 1)"
+              ></v-text-field>
+              <v-btn class="my-3 mb-6" @click="removeStep(index)">Remove step</v-btn>
+            </div>
+            <v-btn @click="addStep" class="mb-6">Add step</v-btn>
+            <v-text-field v-model="newIngredientName"  :rules="[v => !!v || 'Ingredient is required']" label="Click to add Ingredient name" class="ingredient-input" @click="showIngredientPopup"></v-text-field>
+            <v-text-field v-model="newIngredientAmount"  :rules="[v => !!v || 'Amount is required']" label="Amount"></v-text-field>
+            <v-select
+              v-model="newIngredientWeightType"
+              :items="weightTypes"
+              label="Weight type"
+            ></v-select>
+            <v-btn @click="addIngredient" class="mb-6">Add ingredient</v-btn>
+            <div v-for="(ingredient, index) in ingredients" :key="index">
+              <v-text-field
+                v-model="ingredient.name"
+                :rules="[v => !!v || 'Ingredient is required']"
+                label="Click to add Ingredient name"
+                class="ingredient-input"
+              ></v-text-field>
+              <v-text-field
+                v-model="ingredient.amount"
+                label="Amount"
+              ></v-text-field>
+              <v-select
+                v-model="ingredient.weightType"
+                :items="weightTypes"
+                label="Weight type"
+              ></v-select>
+              <v-btn @click="removeIngredient(index)">Remove ingredient</v-btn>
+            </div>
+            <div class="pt-5">
+              <v-btn type="submit">Submit</v-btn>
+            </div>
+          </v-form>
         </v-card>
       </v-window-item>
       <v-window-item
@@ -265,6 +265,14 @@ export default {
       showIngredientPopup
 
     };
+  },
+  methods: {
+    checkLoginStatus() {
+      let loginStatus = this.$store.getters['getUserLoginStatus'];
+      if(loginStatus === false) {
+        this.$router.replace('/Login');
+      }
+    }
   },
   components: {BasePopup, Popup: Popup, Recipe}
 }
