@@ -5,6 +5,8 @@
         :title="recipe.title"
         :categories="recipe.categories"
         :description="recipe.description"
+        :ingredients="recipe.ingredients"
+        :steps="recipe.steps"
         :id="recipe.id"
       ></Recipe>
     </div>

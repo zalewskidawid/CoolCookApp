@@ -25,6 +25,8 @@
       <v-card-subtitle>
         <span class="me-1">{{ categories }}</span>
 
+
+
         <v-icon
           color="error"
           icon="mdi-fire-circle"
@@ -55,6 +57,12 @@
       <div class="my-4 text-subtitle-1">
          Categories: • {{ categories }} •
       </div>
+      <div class="my-4 text-subtitle-1">
+                Ingredients: {{ ingredients }}
+      </div>
+      <div class="my-4 text-subtitle-1">
+        Steps: {{ steps }}
+      </div>
 
       <div>{{ description }}</div>
     </v-card-text>
@@ -78,12 +86,16 @@
 <script>
 
 export default {
-  props: ['title', 'categories', 'description','id'],
+  props: ['title', 'categories', 'description', 'ingredients' , 'steps' , 'id'],
     data() {
       return {
       title: this.title,
       categories: this.categories,
       description: this.description,
+        ingredients: this.ingredients,
+        steps: this.steps
+
+
     }},
     setup(props) {
   },
@@ -95,9 +107,11 @@ export default {
         setTimeout(() => (this.loading = false), 2000)
         console.log(this.title)
         let data = {
-          title: this.title, 
-          categories: this.categories, 
-          description: this.description, 
+          title: this.title,
+          categories: this.categories,
+          description: this.description,
+          ingredients: this.ingredients,
+          steps: this.steps,
           // id: this.id
         }
         this.$router.push({
