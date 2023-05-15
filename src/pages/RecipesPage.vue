@@ -33,6 +33,7 @@
         </v-window-item>
         <v-window-item
           key="2"
+          @click="checkLoginStatus"
           value="tab-2"
         >
         <ShowRecipe></ShowRecipe>
@@ -63,7 +64,15 @@ export default {
       
     }
   },
- 
+  methods: {
+    checkLoginStatus() {
+      let loginStatus = this.$store.getters['getUserLoginStatus'];
+      if(loginStatus === false) {
+        this.$router.replace('/Login');
+      }
+    }
+  },
+
   components: {ShowRecipe, AddRecipe}
 }
 </script>
