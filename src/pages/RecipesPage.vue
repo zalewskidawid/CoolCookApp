@@ -9,13 +9,13 @@
         stacked
       >
         <v-tab value="tab-1">
-          <v-icon>mdi-plus</v-icon>
-          Add recipe
-        </v-tab>
-
-        <v-tab value="tab-2">
           <v-icon>mdi-eye</v-icon>
           Show all recipes
+        </v-tab>
+
+        <v-tab value="tab-2" @click="checkLoginStatus">
+          <v-icon>mdi-plus</v-icon>
+          Add recipe
         </v-tab>
 
         <v-tab value="tab-3">
@@ -29,15 +29,13 @@
           key="1"
           value="tab-1"
         >
-        <AddRecipe></AddRecipe>
+          <ShowRecipe></ShowRecipe>
         </v-window-item>
         <v-window-item
           key="2"
-          @click="checkLoginStatus"
           value="tab-2"
         >
-        <ShowRecipe></ShowRecipe>
-
+          <AddRecipe></AddRecipe>
         </v-window-item>
         <v-window-item
           key="3"
@@ -61,7 +59,7 @@ export default {
   data() {
     return {
       tab: null,
-      
+
     }
   },
   methods: {
