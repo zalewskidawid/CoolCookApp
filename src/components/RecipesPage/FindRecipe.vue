@@ -86,6 +86,8 @@ export default {
             
         }
 
+        this.recipes = [];
+        this.filterdRecipes = [];
         this.getRecipesFromDatabase(selectedIngredients);
 
     },
@@ -105,7 +107,6 @@ export default {
         });
         const result = (JSON.parse(JSON.stringify(this.recipes)));
         console.log(result);
-        // console.log(result[1].ingredients[0].name);
 
         result.forEach((element,index)=>{
             const ingredientsArray = [];
@@ -122,29 +123,9 @@ export default {
                     this.filterdRecipes.push(this.recipes[index]);
                     console.log(this.filterdRecipes)
                     return;
+                    
                 } 
         })
-
-        // const result = JSON.parse(JSON.stringify(this.recipes));
-        // result = JSON.parse(JSON.stringify(this.recipes));
-
-        // console.log(this.result);
-        // console.log(result.forEach(element=>console.log(element.ingredients)))
-        // let ingredients = [];
-        // result.forEach(element=>ingredients.push(element.ingredients));
-        // console.log(ingredients);
-
-        // ingredients.forEach(element=>{
-        //     console.log(element);
-        // })
-
-        // ingredients.forEach((element,index)=>{
-        //     console.log(123);
-            
-        // })
-
-        // const abc = JSON.parse(ingredients);
-        // console.log(abc);
         
       } catch (err) {
         // dialog.value = true;
