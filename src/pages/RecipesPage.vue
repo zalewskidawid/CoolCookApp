@@ -19,8 +19,8 @@
         </v-tab>
 
         <v-tab value="tab-3">
-          <v-icon>mdi-star</v-icon>
-          Favourties
+          <v-icon>mdi-magnify</v-icon>
+          Find recipe
         </v-tab>
       </v-tabs>
 
@@ -41,9 +41,7 @@
           key="3"
           value="tab-3"
         >
-          <v-card>
-            <v-card-text>no content yet</v-card-text>
-          </v-card>
+          <FindRecipe></FindRecipe>
         </v-window-item>
       </v-window>
     </v-card>
@@ -54,6 +52,7 @@
 
 import AddRecipe from "@/components/RecipesPage/AddRecipe.vue";
 import ShowRecipe from "@/components/RecipesPage/ShowRecipe.vue";
+import FindRecipe from "@/components/RecipesPage/FindRecipe.vue"
 
 export default {
   data() {
@@ -71,6 +70,6 @@ export default {
     }
   },
 
-  components: {ShowRecipe, AddRecipe}
+  components: {ShowRecipe, AddRecipe, FindRecipe}
 }
 </script>

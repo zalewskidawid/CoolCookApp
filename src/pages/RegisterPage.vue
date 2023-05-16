@@ -194,9 +194,6 @@ export default {
       },
     ],
 
-
-
-
   }),
 
   methods: {
