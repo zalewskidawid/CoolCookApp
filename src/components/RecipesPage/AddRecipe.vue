@@ -74,7 +74,7 @@
     <Popup :dialog="dialog" :errorText="errorText"/>
 
   </template>
-  
+
   <script>
 import {ref, onMounted} from 'vue';
 import {useStore} from 'vuex';
@@ -100,7 +100,7 @@ export default {
       newIngredientName : '',
       newIngredientAmount : '',
       newIngredientWeightType : '',
-      ingredients : [],
+        ingredients : [],
       weightTypes : ['grams', 'ounces', 'pounds'],
       databaseIngredients : [],
       titleRules: [value => {
@@ -240,7 +240,7 @@ export default {
   components: {BasePopup, Popup: Popup}
 }
 </script>
-  
+
 <style lang="scss" scoped>
 form {
   background: white;
@@ -268,4 +268,3 @@ form {
   padding-right: 10px;
 }
 </style>
-  
