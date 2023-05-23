@@ -1,8 +1,9 @@
 <template>
   <div id="information"></div>
   <div id="recipes">
+    <v-btn @click="underlineIngredients">Show selected ingredients</v-btn>
   <div v-for="recipe in filterdRecipes" :key="recipe.id">
-    <Recipe :title="recipe.title" :ingredients="recipe.ingredients" :categories="recipe.categories" :description="recipe.description" :id="recipe.id">
+    <Recipe :title="recipe.title" :ingredients="recipe.ingredients" :steps="recipe.steps" :categories="recipe.categories" :description="recipe.description" :id="recipe.id">
     </Recipe>
   </div>
 </div>
@@ -32,11 +33,13 @@ export default {
   data() {
     return {
       recipes: [],
+      formattedRecipes: [],
       filterdRecipes: [],
       result: [],
       baseDialog: false,
       filteredArray: this.databaseIngredients,
       databaseIngredients: [],
+      selectedIngredients: [],
 
     }
   },
@@ -104,11 +107,33 @@ export default {
       }
 
       this.recipes = [];
+      this.formattedRecipes = [];
       this.filterdRecipes = [];
       this.reloadIngredients();
 
       this.getRecipesFromDatabase(selectedIngredients);
       ingredients.innerText = '';
+      this.selectedIngredients = [];
+      this.selectedIngredients = selectedIngredients;
+
+
+    },
+     underlineIngredients(){
+      const ingredientsElements = document.querySelectorAll('.ingredients');
+      ingredientsElements.forEach(element=>{
+        let previousText = element.innerText;
+        let newText = previousText;
+        this.selectedIngredients.forEach(ingredient=>{
+          
+          if(previousText.includes(ingredient)){
+            previousText=newText;
+            newText = previousText.replace(ingredient,`<span>${ingredient}</span>`); 
+          }else{
+            //do nothing
+          }
+        })
+        element.innerHTML = newText;
+      })
     },
 
     async getRecipesFromDatabase(selectedIngredients) {
@@ -120,12 +145,43 @@ export default {
         const values = Object.entries(parsedData);
 
         values.forEach((element) => {
-          console.log(selectedIngredients);
-          this.recipes.push({ id: element[0], ...element[1] });
+          let ingredientsString = '';
+          let categoriesString = '';
+          let stepsArray = '';
+          element[1]['ingredients'].forEach(function(el, index) {
+            if(index === element[1]['ingredients'].length - 1) {
+              ingredientsString = ingredientsString + el.name;
+            } else {
+              ingredientsString = ingredientsString + el.name + ', ';
+            }
+          })
+          element[1]['categories'].forEach(function(el, index) {
+            if(index === element[1]['categories'].length - 1) {
+              categoriesString = categoriesString + el;
+            } else {
+              categoriesString = categoriesString + el + ', ';
+            }
+          })
+          element[1]['steps'].forEach(function(el, index) {
+            if(index === element[1]['steps'].length - 1) {
+              stepsArray = stepsArray + (index+1) + '.' + el;
+            } else {
+              stepsArray = stepsArray + (index+1) + '.' + el + "\n";
+            }
+          })
+          this.formattedRecipes.push({
+            id: element[0],
+            categories: categoriesString,
+            title: element[1]['title'],
+            description: element[1]['description'],
+            ingredients:  ingredientsString,
+            steps: stepsArray
+        })
 
+        this.recipes.push({ id: element[0], ...element[1] });
+        console.log(this.recipes)
         });
         const result = (JSON.parse(JSON.stringify(this.recipes)));
-        console.log(result);
 
         result.forEach((element, index) => {
           const ingredientsArray = [];
@@ -140,7 +196,7 @@ export default {
           if (isFounded) {
             const information = document.querySelector('#information');
             console.log(index);
-            this.filterdRecipes.push(this.recipes[index]);
+            this.filterdRecipes.push(this.formattedRecipes[index]);
             information.innerText = ''
             console.log(this.filterdRecipes)
             return;
