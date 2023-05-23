@@ -23,10 +23,7 @@
       <v-card-title>{{ title }}</v-card-title>
 
       <v-card-subtitle>
-        <span class="me-1">{{ categories }}</span>
-
-
-
+        <span class="me-1">{{ categories }} dziala</span>
         <v-icon
           color="error"
           icon="mdi-fire-circle"
@@ -105,15 +102,15 @@ export default {
         this.loading = true
 
         setTimeout(() => (this.loading = false), 2000)
-        console.log(this.title)
         let data = {
           title: this.title,
           categories: this.categories,
           description: this.description,
           ingredients: this.ingredients,
           steps: this.steps,
-          // id: this.id
+          id: this.id
         }
+        console.log(data);
         this.$router.push({
           path: `/Recipes/${this.id}`,
           name: 'showRecipe',
