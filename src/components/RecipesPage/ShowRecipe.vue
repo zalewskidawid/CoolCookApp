@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import { useStore } from "vuex";
+import {ref, onMounted} from "vue";
+import {useStore} from "vuex";
 import Popup from "@/components/Popup.vue";
 import Recipe from "@/components/RecipesPage/Recipe";
 
@@ -36,7 +36,40 @@ export default {
         const values = Object.entries(parsedData);
 
         values.forEach((element) => {
-          recipes.value.push({ id: element[0], ...element[1] });
+          let ingredientsString = '';
+          let categoriesString = '';
+          let stepsArray = '';
+          element[1]['ingredients'].forEach(function(el, index) {
+            if(index === element[1]['ingredients'].length - 1) {
+              ingredientsString = ingredientsString + el.name;
+            } else {
+              ingredientsString = ingredientsString + el.name + ', ';
+            }
+          })
+          element[1]['categories'].forEach(function(el, index) {
+            if(index === element[1]['categories'].length - 1) {
+              categoriesString = categoriesString + el;
+            } else {
+              categoriesString = categoriesString + el + ', ';
+            }
+          })
+          element[1]['steps'].forEach(function(el, index) {
+            if(index === element[1]['steps'].length - 1) {
+              stepsArray = stepsArray + (index+1) + '.' + el;
+            } else {
+              stepsArray = stepsArray + (index+1) + '.' + el + "\n";
+            }
+          })
+          console.log(stepsArray);
+          recipes.value.push({
+            id: element[0],
+            categories: categoriesString,
+            title: element[1]['title'],
+            description: element[1]['description'],
+            ingredients:  ingredientsString,
+            steps: stepsArray
+        })
+          ;
           recipesCategories.value.push(element[1].categories);
         });
         // const result = JSON.parse(JSON.stringify(recipes.value));
@@ -55,7 +88,7 @@ export default {
       getRecipesFromDatabase,
     };
   },
-  components: { Popup: Popup, Recipe },
+  components: {Popup: Popup, Recipe},
 };
 </script>
 
