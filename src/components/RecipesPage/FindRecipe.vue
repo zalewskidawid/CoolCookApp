@@ -1,28 +1,45 @@
 <template>
-        <div v-for="recipe in filterdRecipes" :key="recipe.id">
+  <div id="information"></div>
+  <div id="recipes">
+    <div v-for="recipe in filterdRecipes" :key="recipe.id">
       <Recipe
         :title="recipe.title"
+        :ingredients="recipe.ingredients"
+        :steps="recipe.steps"
         :categories="recipe.categories"
         :description="recipe.description"
         :id="recipe.id"
-      ></Recipe>
+      >
+      </Recipe>
     </div>
-    <div id="ingredients">
-
-    </div>
-    <v-btn @click="showIngredientPopup">Add ingredient</v-btn>
-    <v-btn @click="findRecipes">Find recipe</v-btn>
-    <BasePopup :base-dialog="baseDialog" @close-popup="closeIngredientsPopup">
-      <v-text-field @input="filterIngredients" v-model="searchIngredient" label="Search Ingredient"
-                    placeholder="Ingredient name"></v-text-field>
-      <div class="ingredients-search-wrapper">
-        <p v-if="!filteredArray">No ingredients found.</p>
-        <div v-for="(ingredient, index) in filteredArray" :key="index" class="my-2">
-          <p @click="addIngredientToInput(ingredient)" class="pb-2 ingredient-search-name">{{ ingredient }}</p>
-          <v-divider></v-divider>
-        </div>
+  </div>
+  <div id="ingredients"></div>
+  <v-btn @click="showIngredientPopup">Add ingredient</v-btn>
+  <v-btn @click="findRecipes">Find recipe</v-btn>
+  <BasePopup :base-dialog="baseDialog" @close-popup="closeIngredientsPopup">
+    <v-text-field
+      @input="filterIngredients"
+      v-model="searchIngredient"
+      label="Search Ingredient"
+      placeholder="Ingredient name"
+    ></v-text-field>
+    <div class="ingredients-search-wrapper">
+      <p v-if="!filteredArray">No ingredients found.</p>
+      <div
+        v-for="(ingredient, index) in filteredArray"
+        :key="index"
+        class="my-2"
+      >
+        <p
+          @click="addIngredientToInput(ingredient)"
+          class="pb-2 ingredient-search-name"
+        >
+          {{ ingredient }}
+        </p>
+        <v-divider></v-divider>
       </div>
-    </BasePopup>
+    </div>
+  </BasePopup>
 </template>
 
 <script>
@@ -30,70 +47,109 @@ import Recipe from "@/components/RecipesPage/Recipe";
 import BasePopup from "@/layouts/default/BasePopup";
 
 export default {
-    data(){
-        return {
-            recipes: [],
-            filterdRecipes: [],
-            result :[],
-            baseDialog : false,
-            filteredArray: this.databaseIngredients,
-            databaseIngredients : [],
-            
-        }
-    },
-    methods:{
-        closeIngredientsPopup() {
+  data() {
+    return {
+      recipes: [],
+      formattedRecipes: [],
+      filterdRecipes: [],
+      result: [],
+      baseDialog: false,
+      filteredArray: this.databaseIngredients,
+      databaseIngredients: [],
+      selectedIngredients: [],
+    };
+  },
+  methods: {
+    closeIngredientsPopup() {
       this.baseDialog = false;
-      this.searchIngredient = '';
+      this.searchIngredient = "";
       this.filteredArray = this.databaseIngredients;
     },
     addIngredientToInput(ingredient) {
-      const ingredients = document.querySelector('#ingredients');
-      const h2 = document.createElement('h2');
+      const ingredients = document.querySelector("#ingredients");
+      const div = document.createElement("div");
+      div.style =
+        "text-align: center; width: auto; padding: 10px;border-radius: 20px;background-color: pink;font-weight: 700;margin: 5px; border: solid 2px black;";
+      const p = document.createElement("p");
+      div.appendChild(p);
+      this.searchIngredient = "";
+      this.filteredArray = this.databaseIngredients;
       const childArray = [];
-      ingredients.childNodes.forEach(element=>{
+      ingredients.childNodes.forEach((element) => {
         childArray.push(element.innerText);
-      })
+      });
 
-      if(!childArray.includes(ingredient)){
-        h2.innerText = ingredient;
-        ingredients.appendChild(h2);
+      if (!childArray.includes(ingredient)) {
+        p.innerText = ingredient;
+        ingredients.appendChild(div);
+
+        this.databaseIngredients.forEach((el, index) => {
+          if (this.databaseIngredients[index] === ingredient) {
+            this.databaseIngredients.splice(index, 1);
+          }
+        });
       }
       this.baseDialog = false;
     },
-        showIngredientPopup(){
+    showIngredientPopup() {
       this.baseDialog = true;
     },
-        filterIngredients() {
+    filterIngredients() {
       this.filteredArray = [];
-      this.databaseIngredients.filter(el => {
+      this.databaseIngredients.filter((el) => {
         if (el.toString().startsWith(this.searchIngredient)) {
           this.filteredArray.push(el);
         }
-      })
+      });
     },
-    findRecipes(){
-        const ingredients = document.querySelector('#ingredients');
-        const selectedIngredients = [];
-        ingredients.childNodes.forEach(element=>selectedIngredients.push(element.innerText))
-        console.log(selectedIngredients);
+    async reloadIngredients() {
+      await this.getIngredientsFromDatabase();
+      this.filteredArray = this.getIngredientsFromDatabase();
+    },
+    findRecipes() {
+      const ingredients = document.querySelector("#ingredients");
+      const selectedIngredients = [];
+      ingredients.childNodes.forEach((element) =>
+        selectedIngredients.push(element.innerText)
+      );
 
-        const testArray = ['olive oil', 'coca cola', 'tomatoes'];
-        const isFounded = testArray.some(element => selectedIngredients.includes(element));
+      this.recipes = [];
+      this.formattedRecipes = [];
+      this.filterdRecipes = [];
+      this.reloadIngredients();
 
-        if(isFounded){
-            console.log(`Recipe founded with ingredients: ${testArray}`)
-            
-        }
+      this.getRecipesFromDatabase(selectedIngredients);
+      ingredients.innerText = "";
+      this.selectedIngredients = [];
+      this.selectedIngredients = selectedIngredients;
 
-        this.recipes = [];
-        this.filterdRecipes = [];
-        this.getRecipesFromDatabase(selectedIngredients);
-
+      this.underlineIngredients();
     },
 
-      async getRecipesFromDatabase(selectedIngredients){
-    //   dialog.value = false;
+    underlineIngredients() {
+      setTimeout(() => {
+        const ingredientsElements = document.querySelectorAll(".ingredients");
+        ingredientsElements.forEach((element) => {
+          let previousText = element.innerText;
+          let newText = previousText;
+          this.selectedIngredients.forEach((ingredient) => {
+            if (previousText.includes(ingredient)) {
+              previousText = newText;
+              newText = previousText.replace(
+                ingredient,
+                `<span style="background-color:pink; border-radius:10px; padding:5px; border: solid 1px black; font-size: 2rem; font-weight: 700;">${ingredient}</span>`
+              );
+            } else {
+              //do nothing
+            }
+          });
+          element.innerHTML = newText;
+        });
+      }, 100);
+    },
+
+    async getRecipesFromDatabase(selectedIngredients) {
+      //   dialog.value = false;
       try {
         await this.$store.dispatch("recipeStore/getAllRecipes");
         const data = this.$store.getters["recipeStore/getRecipes"];
@@ -101,60 +157,104 @@ export default {
         const values = Object.entries(parsedData);
 
         values.forEach((element) => {
-          console.log(selectedIngredients);
+          let ingredientsString = "";
+          let categoriesString = "";
+          let stepsArray = "";
+          element[1]["ingredients"].forEach(function (el, index) {
+            if (index === element[1]["ingredients"].length - 1) {
+              ingredientsString = ingredientsString + el.name;
+            } else {
+              ingredientsString = ingredientsString + el.name + ", ";
+            }
+          });
+          element[1]["categories"].forEach(function (el, index) {
+            if (index === element[1]["categories"].length - 1) {
+              categoriesString = categoriesString + el;
+            } else {
+              categoriesString = categoriesString + el + ", ";
+            }
+          });
+          element[1]["steps"].forEach(function (el, index) {
+            if (index === element[1]["steps"].length - 1) {
+              stepsArray = stepsArray + (index + 1) + "." + el;
+            } else {
+              stepsArray = stepsArray + (index + 1) + "." + el + "\n";
+            }
+          });
+          this.formattedRecipes.push({
+            id: element[0],
+            categories: categoriesString,
+            title: element[1]["title"],
+            description: element[1]["description"],
+            ingredients: ingredientsString,
+            steps: stepsArray,
+          });
+
           this.recipes.push({ id: element[0], ...element[1] });
-
         });
-        const result = (JSON.parse(JSON.stringify(this.recipes)));
-        console.log(result);
+        const result = JSON.parse(JSON.stringify(this.recipes));
 
-        result.forEach((element,index)=>{
-            const ingredientsArray = [];
-            element.ingredients.forEach(el=>{
-                ingredientsArray.push(el.name);
-                console.log(ingredientsArray); 
-            })
+        result.forEach((element, index) => {
+          const ingredientsArray = [];
+          element.ingredients.forEach((el) => {
+            ingredientsArray.push(el.name);
+          });
 
-            const isFounded = ingredientsArray.some(element => selectedIngredients.includes(element));
-                console.log(isFounded);
+          const isFounded = ingredientsArray.some((element) =>
+            selectedIngredients.includes(element)
+          );
 
-                if(isFounded){
-                    console.log(index);
-                    this.filterdRecipes.push(this.recipes[index]);
-                    console.log(this.filterdRecipes)
-                    return;
-                    
-                } 
-        })
-        
+          if (isFounded) {
+            const information = document.querySelector("#information");
+            this.filterdRecipes.push(this.formattedRecipes[index]);
+            information.innerText = "";
+            return;
+          } else if (!isFounded) {
+            information.innerText = "No Recipes found";
+          }
+        });
       } catch (err) {
         // dialog.value = true;
         // errorText.value = err.message || "Failed to get recipes";
       }
     },
 
-    async getIngredientsFromDatabase(){
-    //   this.dialog = false;
+    async getIngredientsFromDatabase() {
+      //   this.dialog = false;
+      const array = [];
+      this.databaseIngredients = [];
       try {
-        await this.$store.dispatch('ingredientsStore/getIngredientsFromDatabase');
-        this.$store.getters["ingredientsStore/getIngredients"].forEach(el => {
+        await this.$store.dispatch(
+          "ingredientsStore/getIngredientsFromDatabase"
+        );
+        this.$store.getters["ingredientsStore/getIngredients"].forEach((el) => {
           this.databaseIngredients.push(el);
-        })
+          array.push(el);
+
+          return array;
+        });
       } catch (err) {
         // this.dialog = true;
         // this.errorText = err.message || 'Failed to get ingredients';
       }
-
     },
-
-    },
-    mounted(){
-        this.getIngredientsFromDatabase();
-        this.filteredArray = this.databaseIngredients;
-
-    },
-    components: {Recipe, BasePopup}
-    
+  },
+  mounted() {
+    this.getIngredientsFromDatabase();
+    this.filteredArray = this.databaseIngredients;
+  },
+  components: { Recipe, BasePopup },
 };
 </script>
 
+<style lang="scss" scoped>
+#information {
+  text-align: center;
+  font-weight: 700;
+  color: rebeccapurple;
+}
+#ingredients {
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+}
+</style>

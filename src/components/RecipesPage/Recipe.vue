@@ -54,7 +54,7 @@
       <div class="my-4 text-subtitle-1">
          Categories: • {{ categories }} •
       </div>
-      <div class="my-4 text-subtitle-1">
+      <div class="my-4 text-subtitle-1 ingredients">
                 Ingredients: {{ ingredients }}
       </div>
       <div class="my-4 text-subtitle-1">
