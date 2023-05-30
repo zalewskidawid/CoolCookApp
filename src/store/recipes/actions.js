@@ -33,6 +33,25 @@ export default {
         throw error;
       }
       context.commit('setRecipes', responseData);
+    },
+    async addReview(context, payload) {
+    const recipeId = payload.recipeId;
+      let url = `https://coolcookapp-default-rtdb.europe-west1.firebasedatabase.app/recipes/${recipeId}/reviews.json`;
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({
+          reviewMessage: payload.messageText,
+          reviewNick: payload.messageNick,
+          reviewRate: payload.messageRate
+        })
+      });
+      const responseData = await response.json();
+      if(!response.ok) {
+        const error = new Error(
+          responseData.message || 'Failed to add review'
+        );
+        throw error;
+      }
     }
 }
-  
+

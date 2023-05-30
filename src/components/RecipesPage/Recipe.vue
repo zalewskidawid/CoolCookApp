@@ -38,7 +38,7 @@
         class="mx-0"
       >
         <v-rating
-          :model-value="4.5"
+          :model-value="reviewRate"
           color="amber"
           density="compact"
           half-increments
@@ -47,7 +47,7 @@
         ></v-rating>
 
         <div class="text-grey ms-4">
-          4.5 (413)
+          {{reviewRate}}
         </div>
       </v-row>
 
@@ -62,9 +62,28 @@
       </div>
 
       <div>{{ description }}</div>
+      <div class="my-4 text-subtitle-1">
+        <div class="review-container" v-for="(item, index) in reviews" :key="index">
+          <p class="review-nickname">{{item.reviewNick}}, Ocena - <span class="review-rate">{{item.reviewRate}}</span></p>
+          <p class="review-message">{{item.reviewMessage}}</p>
+        </div>
+      </div>
     </v-card-text>
 
     <v-divider class="mx-4 mb-1"></v-divider>
+      <v-card-actions class="flex-column inputs-container">
+        <input type="text" id="review-name" placeholder="Nick recenzenta" v-model="this.messageNick">
+        <input type="text" id="review-message" placeholder="Wiadomość recenzenta" v-model="this.messageText">
+        <input type="text" id="review-number" placeholder="Ocena recenzenta" v-model="this.messageRate">
+        <v-btn
+          color="deep-purple-lighten-2"
+          variant="text"
+          @click="addReview"
+        >
+          Add review
+        </v-btn>
+      </v-card-actions>
+      <v-divider class="mx-4 mb-1"></v-divider>
     <v-card-actions>
       <router-link :to="`/Recipes/${id}`">
       <v-btn
@@ -83,19 +102,22 @@
 <script>
 
 export default {
-  props: ['title', 'categories', 'description', 'ingredients' , 'steps' , 'id'],
+  props: {
+    title: String,
+    categories: String,
+    description: String,
+    ingredients: String,
+    steps: String,
+    id: String,
+    reviews: Array,
+    reviewRate: Number
+  },
     data() {
       return {
-      title: this.title,
-      categories: this.categories,
-      description: this.description,
-        ingredients: this.ingredients,
-        steps: this.steps
-
-
+        messageNick: '',
+        messageText: '',
+        messageRate: null
     }},
-    setup(props) {
-  },
 
     methods: {
       async reserve () {
@@ -110,16 +132,48 @@ export default {
           steps: this.steps,
           id: this.id
         }
-        console.log(data);
         this.$router.push({
           path: `/Recipes/${this.id}`,
           name: 'showRecipe',
           params: {data}
       });
       },
+      async addReview() {
+        let data = {
+          messageNick: this.messageNick,
+          messageText: this.messageText,
+          messageRate: this.messageRate,
+          recipeId: this.id
+        }
+        try {
+          await this.$store.dispatch('recipeStore/addReview', data);
+        } catch (err) {
+          this.dialog = true;
+          this.errorText = err.message || 'Failed to add Review';
+        }
+      }
     },
+  mounted() {
+  }
   }
 </script>
 
 <style lang="scss" scoped>
+input {
+  border: 1px solid black;
+  margin: 8px;
+  padding: 10px;
+}
+.inputs-container {
+  display: flex;
+  align-items: flex-start;
+}
+.review-container {
+  display: flex;
+  flex-direction: column;
+  margin: 8px 0;
+  .review-nickname {
+    font-size: 24px;
+  }
+}
 </style>
