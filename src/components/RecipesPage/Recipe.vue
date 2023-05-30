@@ -64,17 +64,43 @@
       <div>{{ description }}</div>
       <div class="my-4 text-subtitle-1">
         <div class="review-container" v-for="(item, index) in reviews" :key="index">
-          <p class="review-nickname">{{item.reviewNick}}, Ocena - <span class="review-rate">{{item.reviewRate}}</span></p>
+          <p class="review-nickname">{{item.reviewNick}}, Ocena : <span class="review-rate">{{item.reviewRate}}</span></p>
           <p class="review-message">{{item.reviewMessage}}</p>
         </div>
       </div>
     </v-card-text>
 
     <v-divider class="mx-4 mb-1"></v-divider>
-      <v-card-actions class="flex-column inputs-container">
-        <input type="text" id="review-name" placeholder="Nick recenzenta" v-model="this.messageNick">
-        <input type="text" id="review-message" placeholder="Wiadomość recenzenta" v-model="this.messageText">
-        <input type="text" id="review-number" placeholder="Ocena recenzenta" v-model="this.messageRate">
+      <v-form ref="myValid">
+      <v-card-actions  class="flex-column inputs-container">
+        <v-text-field
+          id="review-name"
+          type="text"
+          v-model="this.messageNick"
+          label="Nick Name"
+          :rules="[v => !!v || 'Nick is required']"
+
+        ></v-text-field>
+        <v-text-field
+          id="review-message"
+          type="text"
+          v-model="this.messageText"
+          label="Write comment"
+          :rules="[v => !!v || 'Comment is required']"
+
+        ></v-text-field>
+        <v-text-field
+          id="review-number"
+          type="text"
+          v-model="this.messageRate"
+          label="Write stars"
+          :rules="starsRules"
+
+        ></v-text-field>
+
+<!--        <input type="text" id="review-name"  placeholder="Nick recenzenta" v-model="this.messageNick"  >-->
+<!--        <input type="text" id="review-message" placeholder="Wiadomość recenzenta" v-model="this.messageText">-->
+<!--        <input type="text" id="review-number" placeholder="Ocena recenzenta" v-model="this.messageRate">-->
         <v-btn
           color="deep-purple-lighten-2"
           variant="text"
@@ -83,6 +109,7 @@
           Add review
         </v-btn>
       </v-card-actions>
+      </v-form>
       <v-divider class="mx-4 mb-1"></v-divider>
     <v-card-actions>
       <router-link :to="`/Recipes/${id}`">
@@ -116,7 +143,15 @@ export default {
       return {
         messageNick: '',
         messageText: '',
-        messageRate: null
+        messageRate: null,
+        starsRules: [value => {
+          if (!value) {
+            return 'You must enter a stars.';
+          } else if (!/^[1-5]$/.test(value)) {
+            return 'Stars must be a number between 1 and 5.'
+          }
+        },
+        ],
     }},
 
     methods: {
@@ -139,19 +174,25 @@ export default {
       });
       },
       async addReview() {
+
+        this.dialog = false;
+
+        const {valid} = await this.$refs.myValid.validate()
+        if (valid){
         let data = {
           messageNick: this.messageNick,
           messageText: this.messageText,
           messageRate: this.messageRate,
           recipeId: this.id
         }
+
         try {
           await this.$store.dispatch('recipeStore/addReview', data);
         } catch (err) {
           this.dialog = true;
           this.errorText = err.message || 'Failed to add Review';
         }
-      }
+      }}
     },
   mounted() {
   }
