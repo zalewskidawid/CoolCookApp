@@ -71,7 +71,7 @@
     </v-card-text>
 
     <v-divider class="mx-4 mb-1"></v-divider>
-      <v-form ref="myValid">
+      <v-form ref="myValid" class="review-form" v-if="this.reviewForm">
       <v-card-actions  class="flex-column inputs-container">
         <v-text-field
           id="review-name"
@@ -89,18 +89,17 @@
           :rules="[v => !!v || 'Comment is required']"
 
         ></v-text-field>
-        <v-text-field
-          id="review-number"
-          type="text"
-          v-model="this.messageRate"
-          label="Write stars"
-          :rules="starsRules"
+<!--        <v-text-field-->
+<!--          id="review-number"-->
+<!--          type="text"-->
+<!--          v-model="this.messageRate"-->
+<!--          label="Write stars"-->
+<!--          :rules="starsRules"-->
 
-        ></v-text-field>
-
-<!--        <input type="text" id="review-name"  placeholder="Nick recenzenta" v-model="this.messageNick"  >-->
-<!--        <input type="text" id="review-message" placeholder="Wiadomość recenzenta" v-model="this.messageText">-->
-<!--        <input type="text" id="review-number" placeholder="Ocena recenzenta" v-model="this.messageRate">-->
+<!--        ></v-text-field>-->
+        <p class="ps-3 font-weight-bold">Choose your rating</p>
+        <v-rating v-model="this.messageRate" :max="5"></v-rating>
+        <p class="ps-3 error" v-if="messageRateValidation === false">Rating cannot be empty</p>
         <v-btn
           color="deep-purple-lighten-2"
           variant="text"
@@ -110,6 +109,9 @@
         </v-btn>
       </v-card-actions>
       </v-form>
+      <v-btn color="deep-purple-lighten-2"
+             variant="text"
+             @click="showReviewForm">{{ reviewFormBtnText }}</v-btn>
       <v-divider class="mx-4 mb-1"></v-divider>
     <v-card-actions>
       <router-link :to="`/Recipes/${id}`">
@@ -144,6 +146,8 @@ export default {
         messageNick: '',
         messageText: '',
         messageRate: null,
+        messageRateValidation: true,
+        reviewForm: false,
         starsRules: [value => {
           if (!value) {
             return 'You must enter a stars.';
@@ -173,12 +177,15 @@ export default {
           params: {data}
       });
       },
+      showReviewForm() {
+        this.reviewForm = !this.reviewForm
+      },
       async addReview() {
 
         this.dialog = false;
-
+        this.messageRate === null ? this.messageRateValidation = false : this.messageRateValidation = true;
         const {valid} = await this.$refs.myValid.validate()
-        if (valid){
+        if (valid && this.messageRateValidation){
         let data = {
           messageNick: this.messageNick,
           messageText: this.messageText,
@@ -194,7 +201,14 @@ export default {
         }
       }}
     },
-  mounted() {
+  computed: {
+    reviewFormBtnText() {
+      if(this.reviewForm) {
+        return 'Hide add review form'
+      } else {
+        return 'Show add review form'
+      }
+    }
   }
   }
 </script>
@@ -216,5 +230,9 @@ input {
   .review-nickname {
     font-size: 24px;
   }
+}
+.error {
+  color: rgb(176,0,32);
+  font-size: 13px;
 }
 </style>
