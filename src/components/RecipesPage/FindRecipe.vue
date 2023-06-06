@@ -149,7 +149,7 @@ export default {
           });
           element.innerHTML = newText;
         });
-      }, 100);
+      }, 1000);
     },
 
     async getRecipesFromDatabase(selectedIngredients) {
@@ -225,9 +225,10 @@ export default {
             this.filterdRecipes.push(this.formattedRecipes[index]);
             information.innerText = "";
             return;
-          } else if (!isFounded) {
-            information.innerText = "No Recipes found";
-          }
+          } 
+          // else if (!isFounded) {
+          //   information.innerText = "No Recipes found";
+          // }
         });
       } catch (err) {
         // dialog.value = true;
