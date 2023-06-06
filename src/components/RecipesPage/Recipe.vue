@@ -133,14 +133,7 @@ export default {
       });
     },
     showReviewForm() {
-      
       let loginStatus = this.$store.getters['getUserLoginStatus'];
-      // if (!loginStatus) {
-      //   this.$router.replace('/Login');
-      // }else{
-      //   this.reviewForm = !this.reviewForm;
-      // }
-
       loginStatus?this.reviewForm = !this.reviewForm:this.$router.replace('/Login');
     },
     async addReview() {
@@ -178,7 +171,7 @@ export default {
         return 'Show add review form'
       }
     }
-  }
+  },
 }
 </script>
 
