@@ -81,11 +81,10 @@ export default {
             description: element[1]['description'],
             ingredients:  ingredientsString,
             steps: stepsArray
-        })
-          ;
+        });
           recipesCategories.value.push(element[1].categories);
         });
-        // const result = JSON.parse(JSON.stringify(recipes.value));
+        recipes.value.shift();
       } catch (err) {
         dialog.value = true;
         errorText.value = err.message || "Failed to get recipes";
