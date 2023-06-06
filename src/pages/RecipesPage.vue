@@ -10,22 +10,22 @@
       >
         <v-tab value="tab-1">
           <v-icon>mdi-eye</v-icon>
-          Show all recipes
+          Show
         </v-tab>
 
         <v-tab value="tab-2" @click="checkLoginStatus">
           <v-icon>mdi-plus</v-icon>
-          Add recipe
+          Add 
         </v-tab>
 
         <v-tab value="tab-3">
           <v-icon>mdi-magnify</v-icon>
-          Find recipe
+          Find
         </v-tab>
 
         <v-tab value="tab-4">
           <v-icon>mdi-star</v-icon>
-          Recipes Ranking
+          Ranking
         </v-tab>
       </v-tabs>
 
