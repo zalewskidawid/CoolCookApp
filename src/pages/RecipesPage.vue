@@ -22,6 +22,11 @@
           <v-icon>mdi-magnify</v-icon>
           Find recipe
         </v-tab>
+
+        <v-tab value="tab-4">
+          <v-icon>mdi-star</v-icon>
+          Recipes Ranking
+        </v-tab>
       </v-tabs>
 
       <v-window v-model="tab">
@@ -43,6 +48,13 @@
         >
           <FindRecipe></FindRecipe>
         </v-window-item>
+
+        <v-window-item
+          key="4"
+          value="tab-4"
+        >
+          <RecipesRanking></RecipesRanking>
+        </v-window-item>
       </v-window>
     </v-card>
 
@@ -52,7 +64,8 @@
 
 import AddRecipe from "@/components/RecipesPage/AddRecipe.vue";
 import ShowRecipe from "@/components/RecipesPage/ShowRecipe.vue";
-import FindRecipe from "@/components/RecipesPage/FindRecipe.vue"
+import FindRecipe from "@/components/RecipesPage/FindRecipe.vue";
+import RecipesRanking from "@/components/RecipesPage/RecipesRanking.vue";
 
 export default {
   data() {
@@ -70,6 +83,6 @@ export default {
     }
   },
 
-  components: {ShowRecipe, AddRecipe, FindRecipe}
+  components: {ShowRecipe, AddRecipe, FindRecipe, RecipesRanking}
 }
 </script>

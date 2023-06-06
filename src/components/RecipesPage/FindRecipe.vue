@@ -9,13 +9,17 @@
         :categories="recipe.categories"
         :description="recipe.description"
         :id="recipe.id"
+        :reviews="recipe.reviews"
+        :review-rate="recipe.reviewRate"
       >
       </Recipe>
     </div>
   </div>
   <div id="ingredients"></div>
-  <v-btn @click="showIngredientPopup">Add ingredient</v-btn>
-  <v-btn @click="findRecipes">Find recipe</v-btn>
+  <div id="action-buttons">
+    <v-btn @click="showIngredientPopup">Add ingredient</v-btn>
+    <v-btn @click="findRecipes">Find recipe</v-btn>
+  </div>
   <BasePopup :base-dialog="baseDialog" @close-popup="closeIngredientsPopup">
     <v-text-field
       @input="filterIngredients"
@@ -160,6 +164,9 @@ export default {
           let ingredientsString = "";
           let categoriesString = "";
           let stepsArray = "";
+          let reviewRate = 0;
+          let reviewNumber = 0;
+          let reviewArray = [];
           element[1]["ingredients"].forEach(function (el, index) {
             if (index === element[1]["ingredients"].length - 1) {
               ingredientsString = ingredientsString + el.name;
@@ -181,8 +188,17 @@ export default {
               stepsArray = stepsArray + (index + 1) + "." + el + "\n";
             }
           });
+          for (const [_, value] of Object.entries(element[1]["reviews"])) {
+            reviewRate = reviewRate + parseInt(value.reviewRate);
+            reviewNumber = reviewNumber + 1;
+          }
+          for (const [_, value] of Object.entries(element[1]["reviews"])) {
+            reviewArray.push(value);
+          }
           this.formattedRecipes.push({
             id: element[0],
+            reviews: reviewArray,
+            reviewRate: (reviewRate / reviewNumber).toFixed(2),
             categories: categoriesString,
             title: element[1]["title"],
             description: element[1]["description"],
@@ -256,5 +272,10 @@ export default {
 #ingredients {
   display: grid;
   grid-template-columns: 200px 200px 200px;
+}
+#action-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 10px;
 }
 </style>
