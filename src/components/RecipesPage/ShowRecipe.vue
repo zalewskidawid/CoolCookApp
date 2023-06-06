@@ -65,23 +65,34 @@ export default {
               stepsArray = stepsArray + (index+1) + '.' + el + "\n";
             }
           });
-          for (const [_, value] of Object.entries(element[1]['reviews'])) {
-            reviewRate =  reviewRate + parseInt(value.reviewRate);
-            reviewNumber = reviewNumber + 1;
+          if(typeof element[1]['reviews'] === 'undefined') {
+            recipes.value.push({
+              id: element[0],
+              categories: categoriesString,
+              title: element[1]['title'],
+              description: element[1]['description'],
+              ingredients:  ingredientsString,
+              steps: stepsArray
+            });
+          } else {
+            for (const [_, value] of Object.entries(element[1]['reviews'])) {
+              reviewRate =  reviewRate + parseInt(value.reviewRate);
+              reviewNumber = reviewNumber + 1;
+            }
+            for (const [_, value] of Object.entries(element[1]['reviews'])) {
+              reviewArray.value.push(value);
+            }
+            recipes.value.push({
+              id: element[0],
+              reviews: reviewArray,
+              reviewRate: (reviewRate / reviewNumber).toFixed(2),
+              categories: categoriesString,
+              title: element[1]['title'],
+              description: element[1]['description'],
+              ingredients:  ingredientsString,
+              steps: stepsArray
+            });
           }
-          for (const [_, value] of Object.entries(element[1]['reviews'])) {
-            reviewArray.value.push(value);
-          }
-          recipes.value.push({
-            id: element[0],
-            reviews: reviewArray,
-            reviewRate: (reviewRate / reviewNumber).toFixed(2),
-            categories: categoriesString,
-            title: element[1]['title'],
-            description: element[1]['description'],
-            ingredients:  ingredientsString,
-            steps: stepsArray
-        });
           recipesCategories.value.push(element[1].categories);
         });
         recipes.value.shift();

@@ -9,7 +9,7 @@ export default {
         description: payload.description,
         categories: payload.categories,
         steps: payload.steps,
-        ingredients: payload.ingredients
+        ingredients: payload.ingredients,
       })
     });
     const responseData = await response.json();

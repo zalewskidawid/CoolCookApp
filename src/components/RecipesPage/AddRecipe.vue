@@ -76,12 +76,8 @@
   </template>
 
   <script>
-import {ref, onMounted} from 'vue';
-import {useStore} from 'vuex';
-import {useRouter} from 'vue-router';
 import Popup from '@/components/Popup.vue';
 import BasePopup from "@/layouts/default/BasePopup";
-import Recipe from "@/components/RecipesPage/Recipe";
 
 export default {
   data() {
