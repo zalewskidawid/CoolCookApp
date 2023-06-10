@@ -1,18 +1,39 @@
 <template>
   <div id="action-buttons">
+    <span>Choose min rating</span>
     <v-rating
       v-model="rating"
       background-color="orange lighten-1"
       color="blue"
       @input="filterByRate"
     ></v-rating>
-
-
-    <!--    <v-btn @click="filterByRate"><v-icon>mdi-filter</v-icon>Filter by rate</v-btn>-->
-<!--    <v-btn @click="findRecipes('min')"><v-icon>mdi-star</v-icon>sort by best</v-btn>-->
-<!--    <v-btn @click="findRecipes('max')"><v-icon>mdi-star</v-icon>sort by worst</v-btn>-->
     <v-btn @click="findRecipes('top')"><v-icon>mdi-podium</v-icon>top 1</v-btn>
   </div>
+  <v-card class="d-flex flex-row flex-wrap">
+    <v-checkbox
+      v-model="categories.mainDishes"
+      label="Main dishes"
+      @change="filterByRate"
+    ></v-checkbox>
+
+    <v-checkbox
+      v-model="categories.desserts"
+      label="Desserts"
+      @change="filterByRate"
+    ></v-checkbox>
+
+    <v-checkbox
+      v-model="categories.appetizers"
+      label="Appetizers"
+      @change="filterByRate"
+    ></v-checkbox>
+
+    <v-checkbox
+      v-model="categories.all"
+      label="All"
+      @change="filterByRate"
+    ></v-checkbox>
+  </v-card>
   <div id="recipes">
     <div v-for="recipe in filteredRecipes" :key="recipe.id">
       <Recipe :title="recipe.title" :ingredients="recipe.ingredients" :steps="recipe.steps"
@@ -34,6 +55,12 @@ export default {
       filteredRecipes: [],
       result: [],
       rating: null,
+      categories: {
+        mainDishes: true,
+        desserts: true,
+        appetizers: true,
+        all: true
+      },
 
     };
   },
@@ -157,8 +184,29 @@ export default {
 
 
     filterByRate() {
-      const selectedRate = parseInt(this.rating);
-      this.filteredRecipes = this.recipes.filter(recipe => recipe.reviewRate >= selectedRate);
+      const selectedRate = this.rating ? parseInt(this.rating) : 0;
+      const selectedCategories = Object.values(this.categories).filter(val => val);
+
+      if (selectedCategories.length === 0 && !this.rating) {
+        this.filteredRecipes = this.recipes.slice(0, 1);
+      } else if (this.categories.all) {
+        this.filteredRecipes = this.recipes;
+        this.categories = {
+          mainDishes: true,
+          desserts: true,
+          appetizers: true,
+          all: true
+        };
+      } else {
+        this.filteredRecipes = this.recipes.filter(recipe => {
+          const meetsRate = selectedRate === 0 || recipe.reviewRate >= selectedRate;
+          const meetsCategory = (this.categories.mainDishes && recipe.categories.includes('Main dishes')) ||
+            (this.categories.desserts && recipe.categories.includes('Desserts')) ||
+            (this.categories.appetizers && recipe.categories.includes('Appetizers'));
+          return meetsRate && meetsCategory;
+        });
+        this.categories.all = false;
+      }
     },
 
 
@@ -224,10 +272,14 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 #action-buttons {
   display: flex;
   justify-content: space-evenly;
   margin: 10px;
+  span {
+    display: flex;
+    align-items: center;
+  }
 }
 </style>
