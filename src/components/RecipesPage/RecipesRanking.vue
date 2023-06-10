@@ -1,7 +1,16 @@
 <template>
   <div id="action-buttons">
-    <v-btn @click="findRecipes('min')"><v-icon>mdi-star</v-icon>sort by best</v-btn>
-    <v-btn @click="findRecipes('max')"><v-icon>mdi-star</v-icon>sort by worst</v-btn>
+    <v-rating
+      v-model="rating"
+      background-color="orange lighten-1"
+      color="blue"
+      @input="filterByRate"
+    ></v-rating>
+
+
+    <!--    <v-btn @click="filterByRate"><v-icon>mdi-filter</v-icon>Filter by rate</v-btn>-->
+<!--    <v-btn @click="findRecipes('min')"><v-icon>mdi-star</v-icon>sort by best</v-btn>-->
+<!--    <v-btn @click="findRecipes('max')"><v-icon>mdi-star</v-icon>sort by worst</v-btn>-->
     <v-btn @click="findRecipes('top')"><v-icon>mdi-podium</v-icon>top 1</v-btn>
   </div>
   <div id="recipes">
@@ -15,6 +24,7 @@
 </template>
 
 <script>
+
 import Recipe from "@/components/RecipesPage/Recipe";
 
 export default {
@@ -23,6 +33,8 @@ export default {
       recipes: [],
       filteredRecipes: [],
       result: [],
+      rating: null,
+
     };
   },
   methods: {
@@ -115,6 +127,8 @@ export default {
 
       }
     },
+
+
     sortMax() {
       const result = JSON.parse(JSON.stringify(this.recipes));
 
@@ -140,6 +154,14 @@ export default {
       })
 
     },
+
+
+    filterByRate() {
+      const selectedRate = parseInt(this.rating);
+      this.filteredRecipes = this.recipes.filter(recipe => recipe.reviewRate >= selectedRate);
+    },
+
+
     sortMin() {
       const result = JSON.parse(JSON.stringify(this.recipes));
 
@@ -165,6 +187,7 @@ export default {
       })
 
     },
+
     sortTop() {
       const result = JSON.parse(JSON.stringify(this.recipes));
 
@@ -192,6 +215,8 @@ export default {
 
     }
   },
+
+
   mounted() {
     this.findRecipes('min');
   },
