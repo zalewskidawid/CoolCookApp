@@ -263,4 +263,8 @@ form {
   overflow-y: scroll;
   padding-right: 10px;
 }
+.gray-line {
+  border-top: 1px solid gray;
+  margin-top: 20px;
+}
 </style>

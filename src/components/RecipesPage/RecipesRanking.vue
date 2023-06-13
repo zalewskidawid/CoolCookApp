@@ -190,7 +190,11 @@ export default {
       if (selectedCategories.length === 0 && !this.rating) {
         this.filteredRecipes = this.recipes.slice(0, 1);
       } else if (this.categories.all) {
-        this.filteredRecipes = this.recipes;
+        if (this.rating) {
+          this.filteredRecipes = this.recipes.filter(recipe => recipe.reviewRate >= selectedRate);
+        } else {
+          this.filteredRecipes = this.recipes;
+        }
         this.categories = {
           mainDishes: true,
           desserts: true,
@@ -208,7 +212,6 @@ export default {
         this.categories.all = false;
       }
     },
-
 
     sortMin() {
       const result = JSON.parse(JSON.stringify(this.recipes));
