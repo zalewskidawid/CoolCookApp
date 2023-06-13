@@ -199,12 +199,8 @@ export default {
     async submitForm(){
       this.dialog = false;
       const {valid} = await this.$refs.addRecipeForm.validate()
-      if(this.steps.length == 0) {
-        this.stepValidation = false;
-      }
-      if(this.ingredients.length == 0) {
-        this.ingredientsValidation = false;
-      }
+      this.steps.length == 0 ? this.stepValidation = false : this.stepValidation = true;
+      this.ingredients.length == 0 ? this.ingredientsValidation = false : this.ingredientsValidation = true;
       if (valid && this.steps.length > 0 && this.ingredients.length > 0) {
         const recipe = {
           title: this.title,
