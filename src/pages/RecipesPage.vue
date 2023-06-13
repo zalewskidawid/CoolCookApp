@@ -15,7 +15,7 @@
 
         <v-tab value="tab-2" @click="checkLoginStatus">
           <v-icon>mdi-plus</v-icon>
-          Add 
+          Add
         </v-tab>
 
         <v-tab value="tab-3">
