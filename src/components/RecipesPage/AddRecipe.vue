@@ -23,6 +23,7 @@
                 <v-btn class="my-3 mb-6" @click="removeStep(index)">Remove step</v-btn>
               </div>
               <v-btn @click="addStep" class="mb-6">Add step</v-btn>
+              <p v-if="!stepValidation" class="error-text">You must add min 1 step.</p>
               <v-text-field v-model="newIngredientName" :rules="[v => !!v || 'Ingredient is required']"
                             label="Click to add Ingredient name" class="ingredient-input"
                             @click="showIngredientPopup"></v-text-field>
@@ -54,6 +55,7 @@
                 ></v-select>
                 <v-btn @click="removeIngredient(index)">Remove ingredient</v-btn>
               </div>
+              <p v-if="!ingredientsValidation" class="error-text">You must add min 1 ingredient.</p>
               <div class="pt-5">
                 <v-btn type="submit">Submit</v-btn>
               </div>
@@ -92,11 +94,13 @@ export default {
       description : '',
       selectedCategories : [],
       categories : ['Appetizers', 'Main dishes', 'Desserts'],
-      steps : [{description: ''}],
+      steps : [],
+      stepValidation: true,
       newIngredientName : '',
       newIngredientAmount : '',
       newIngredientWeightType : '',
-        ingredients : [],
+      ingredients : [],
+      ingredientsValidation: true,
       weightTypes : ['grams', 'ounces', 'pounds'],
       databaseIngredients : [],
       titleRules: [value => {
@@ -195,7 +199,13 @@ export default {
     async submitForm(){
       this.dialog = false;
       const {valid} = await this.$refs.addRecipeForm.validate()
-      if (valid) {
+      if(this.steps.length == 0) {
+        this.stepValidation = false;
+      }
+      if(this.ingredients.length == 0) {
+        this.ingredientsValidation = false;
+      }
+      if (valid && this.steps.length > 0 && this.ingredients.length > 0) {
         const recipe = {
           title: this.title,
           description: this.description,
@@ -248,7 +258,6 @@ form {
 .ingredient-input {
   cursor: pointer;
 }
-
 .ingredients-header {
   background-color: black;
   color: white;
@@ -266,5 +275,12 @@ form {
 .gray-line {
   border-top: 1px solid gray;
   margin-top: 20px;
+}
+.error-text {
+  color: rgb(176,0,32);
+  font-size: 12px;
+  margin-top: -16px;
+  margin-bottom: 8px;
+  padding-left: 16px;
 }
 </style>

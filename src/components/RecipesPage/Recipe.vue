@@ -53,14 +53,6 @@
             :rules="[v => !!v || 'Nick is required']"></v-text-field>
           <v-text-field id="review-message" type="text" v-model="this.messageText" label="Write comment"
             :rules="[v => !!v || 'Comment is required']"></v-text-field>
-          <!--        <v-text-field-->
-          <!--          id="review-number"-->
-          <!--          type="text"-->
-          <!--          v-model="this.messageRate"-->
-          <!--          label="Write stars"-->
-          <!--          :rules="starsRules"-->
-
-          <!--        ></v-text-field>-->
           <p class="ps-3 font-weight-bold">Choose your rating</p>
           <v-rating v-model="this.messageRate" :max="5"></v-rating>
           <p class="ps-3 error" v-if="messageRateValidation === false">Rating cannot be empty</p>
@@ -71,13 +63,6 @@
       </v-form>
       <v-btn color="deep-purple-lighten-2" variant="text" @click="showReviewForm">{{ reviewFormBtnText }}</v-btn>
       <v-divider class="mx-4 mb-1"></v-divider>
-      <v-card-actions>
-        <router-link :to="`/Recipes/${id}`">
-          <v-btn color="deep-purple-lighten-2" variant="text" @click="reserve">
-            Show more
-          </v-btn>
-        </router-link>
-      </v-card-actions>
     </v-card>
   </v-container>
 </template>
