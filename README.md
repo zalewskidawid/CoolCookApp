@@ -1,30 +1,26 @@
-# CoolCookApp
+# CoolCookApp Project
+## Project Description
+CoolCookApp is a web application developed as a collaborative project for a university course. The main objective of the project was to assess teamwork and working in an Agile Scrum environment. The project involved a three-person team that delivered new functionalities every week.
 
+CoolCookApp is designed to provide users with a collection of food recipes stored in a database and allow them to add their own recipes. The application includes the following requirements:
 
-# Koncept Aplikacji:
-
-
-### Aplikacja ma zadanie przedstawic użytkownikowi zbiór przepisów jedzenia znajdujących się w bazie danych,a także umożliwiać dodanie własnych przepisów
-
-# Wymagania Aplikacji:
-* System rejestracji i logowania
-* Wyświetlanie przepisów
-  * licznik kalori
-  * składniki
-  * opis przygotowania
-  * czas
-* Dodawanie przepisów
-* Wyszukiwanie przepisów
-* Wyszukiwanie przepisów z dostępnych, wybranych przez użytkownika produktów
-* Strona główna przedstawiająca aplikacje
-* 3 podstrony przedstawiające opis 3 różnych kuchni świata
-  * kuchnia polska
-  * kuchnia azjatycka
-  * kuchnia włoska
+- User registration and login system
+- Displaying recipes with details such as calorie count, ingredients, and preparation instructions
+- Adding new recipes to the database
+- Searching for recipes based on specific criteria
+- Searching for recipes based on user-selected ingredients
+- Home page showcasing the application's features
   
+## Technologies Used
+The project utilizes the following technologies:
 
+- Vue.js: The CoolCookApp is built using Vue.js, a progressive JavaScript framework that facilitates the development of interactive web applications.
+- Vuetify: Vuetify, a material design component framework for Vue.js, is employed for creating a visually appealing and consistent user interface.
+- Firebase: Firebase serves as the backend infrastructure for the application, providing real-time data synchronization, secure authentication, and scalable storage capabilities.
+- SCSS: SCSS (Sass) is used as a preprocessor for CSS, allowing for the creation of maintainable and customizable styles.
+- Vuex: Vuex, a state management pattern and library for Vue.js, is used to manage the application's state and ensure smooth data flow between components.
 
-# base
+CoolCookApp showcases the effective use of Vue.js, Vuetify, Firebase, SCSS, and Vuex to develop a user-friendly and feature-rich recipe application. The project's iterative development approach following Agile Scrum principles allowed for continuous improvement and the delivery of new functionalities each week.
 
 ## Project setup
 
